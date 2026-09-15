@@ -29,8 +29,10 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect(page.locator('.results-table tbody tr')).toHaveCount(1);
   await expect(page.locator('.results-table')).not.toContainText('Directions used');
   await expect(page.locator('.results-table tbody td')).toHaveText(['No 7','No 4','No 4','No 3']);
-  await expect(page.locator('.hero .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
+  await expect(page.locator('.hero-copy > .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
   await expect(page.locator('.hero .lede')).toContainText('three, four and six dimensions');
+  await expect(page.locator('.hero .llm-credit')).toContainText('GPT-6 Astra');
+  await expect(page.locator('.hero .llm-credit svg[aria-hidden="true"]')).toHaveCount(1);
   expect(await page.evaluate(()=>document.querySelector('#walk').getBoundingClientRect().bottom<innerHeight)).toBe(true);
   await page.screenshot({path:'.local/above-fold.png'});
   await page.locator('#view-options summary').click();
