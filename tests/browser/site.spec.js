@@ -36,6 +36,14 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect(page.locator('.hero .llm-credit svg[aria-hidden="true"]')).toHaveCount(1);
   const authors=await page.locator('.hero .credit').boundingBox(),llm=await page.locator('.llm-credit').boundingBox();
   expect(llm.y).toBeGreaterThanOrEqual(authors.y+authors.height);
+  const institutions=page.locator('.hero-institutions');
+  await expect(institutions.getByRole('link',{name:/KU Leuven/})).toHaveAttribute('href','https://wms.cs.kuleuven.be/cs/english');
+  await expect(institutions.getByRole('link',{name:/University of Waterloo/})).toHaveAttribute('href','https://cs.uwaterloo.ca/');
+  await expect.poll(()=>institutions.locator('img').evaluateAll(images=>images.length===2&&images.every(img=>img.complete&&img.naturalWidth>0))).toBe(true);
+  const logos=await institutions.boundingBox();
+  expect(logos.y).toBeGreaterThanOrEqual(authors.y+authors.height+20);
+  expect(llm.y).toBeGreaterThanOrEqual(logos.y+logos.height+20);
+  await page.locator('.hero-credits').screenshot({path:'.local/hero-credits-desktop.png'});
   expect(await page.evaluate(()=>document.querySelector('#walk').getBoundingClientRect().bottom<innerHeight)).toBe(true);
   await page.screenshot({path:'.local/above-fold.png'});
   await page.locator('#view-options summary').click();
