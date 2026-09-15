@@ -70,21 +70,101 @@
 <details><summary>How the three results fit together</summary><div class="details-body"><p><strong>6D:</strong> square-corner state tags force any hypothetical collinear triple into one state. The Gaussian norm and 2-adic identity rule it out. Six auxiliary step types become six standard basis directions.</p><p><strong>4D:</strong> take returns to one state in the ternary construction. Their four displacement types give a four-letter walk. The quadratic form X² − 3Y² and a modulo-3 contradiction exclude four collinear vertices.</p><p><strong>3D:</strong> transform those four return steps into two coordinate steps and two diagonal steps. Subdivide the diagonals. The vertices lie in a set S and its translate S + e₂, each meeting any line at most three times. Together, at most six.</p></div></details>
 <p class="note">Still open in this snapshot: no-three-collinear positive-basis walks in 4D or 5D, and no-four-collinear in 3D. The related original Erdős 193 theorem allows a different, arbitrary finite step set.</p>
 </section>
-<section id="code"><p class="eyebrow">03 / Reproduce</p><h2>Edit the code. Inspect the output.</h2><p>Run a small example of the same constructions in your browser. Edit the dimension or step count, then run; the output stays alongside the code that produced it.</p>
+<section id="code"><p class="eyebrow">03 / Reproduce</p><h2>Edit the code. Inspect the output.</h2><p>The complete generator and exact checker are below: no Python imports or hidden helper code. Edit the source, dimension or step count, then run; the output stays alongside the code that produced it.</p>
 <div class="workbench" id="workbench">
 <div class="source-panel"><div class="panel-head"><strong>example.py</strong><div class="panel-actions"><button id="fullscreen-code" aria-pressed="false">Full screen</button><button id="reset-code">Reset</button><a href="walks.py" download>walks.py ↓</a></div></div>
-<div class="editor"><pre id="code-highlight" aria-hidden="true"><code></code></pre><label for="python-code" class="sr-only">Editable Python example</label><textarea id="python-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="code-help">from walks import vertices, check
+<div class="editor"><pre id="code-highlight" aria-hidden="true"><code></code></pre><label for="python-code" class="sr-only">Editable Python example</label><textarea id="python-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="code-help"># Basis Walks — self-contained Python, no imports.
+# Constructions: Stijn Cambie, Erik Kalviainen, Jeffrey Shallit.
+# Finite checks are not infinite proofs.
 
-# Choose 3, 4, 5 (embedding), or 6.
-dimension = 6
-steps = 128  # At most 512 in the browser.
+# Edit these parameters, or any of the code below.
+dimension = 6  # Choose 3, 4, 5 (4D embedding), or 6.
+steps = 128   # At most 512 for this small browser check.
+
+BOUNDS = {3: 7, 4: 4, 5: 4, 6: 3}
+
+
+def letters(dimension, steps):
+    """Generate the direction of each positive unit step."""
+    if dimension not in BOUNDS or not isinstance(steps, int) or steps < 0:
+        raise ValueError("Choose dimension 3–6 and a nonnegative step count")
+    if dimension == 6:
+        # Binary-state recurrence, modulo 4.
+        states = [0] * (steps + 1)
+        for n in range(1, steps + 1):
+            states[n] = ((n % 2) - states[n // 2]) % 4
+        coding = {
+            (0, 1): 0, (1, 2): 1, (2, 3): 2, (3, 0): 3,
+            (0, 2): 4, (1, 3): 4, (2, 0): 5, (3, 1): 5,
+        }
+        return [coding[states[n], states[n + 1]] for n in range(steps)]
+
+    # Five-letter return substitution for 3D and 4D.
+    # In 5D, direction 4 is unused: this is the 4D embedding.
+    substitution = dict(zip("ABCDE", ("AB", "AACA", "ADE", "AACCE", "ADCCA")))
+    coding = dict(zip("ABCDE", ("0", "1", "20", "21", "21") if dimension == 3
+                      else ("0", "1", "2", "3", "3")))
+    word = "A"
+    while len(word) < steps:
+        word = "".join(substitution[a] for a in word)
+    return [int(a) for a in "".join(coding[a] for a in word)[:steps]]
+
+
+def vertices(dimension, steps):
+    """Original integer coordinates, not a display projection."""
+    points = [[0] * dimension]
+    for direction in letters(dimension, steps):
+        point = points[-1].copy()
+        point[direction] += 1
+        points.append(point)
+    return points
+
+
+def gcd(a, b):
+    """Euclidean algorithm: no library dependency."""
+    while b:
+        a, b = b, a % b
+    return a
+
+
+def anchor_check(points, anchor, forbidden):
+    """Group later vertices by exact primitive integer direction."""
+    directions = {}
+    for j in range(anchor + 1, len(points)):
+        delta = [b - a for a, b in zip(points[anchor], points[j])]
+        divisor = 0
+        for coordinate in delta:
+            divisor = gcd(divisor, coordinate)
+        if not divisor:
+            raise ValueError("Duplicate vertices are not supported")
+        key = tuple(x // divisor for x in delta)
+        group = directions.setdefault(key, [])
+        group.append(j)
+        if len(group) >= forbidden - 1:
+            return [anchor] + group[:forbidden - 1]
+    return None
+
+
+def check(dimension, steps):
+    """Every forbidden set has an earliest anchor; unequal gaps count too."""
+    if not isinstance(steps, int) or not 0 <= steps <= 512:
+        raise ValueError("Browser check limited to 0–512 steps")
+    points = vertices(dimension, steps)
+    for anchor in range(len(points)):
+        witness = anchor_check(points, anchor, BOUNDS[dimension])
+        if witness:
+            return {"dimension": dimension, "steps": steps,
+                    "forbidden": BOUNDS[dimension],
+                    "status": "counterexample", "witness": witness}
+    return {"dimension": dimension, "steps": steps, "vertices": len(points),
+            "forbidden": BOUNDS[dimension], "status": "finite-prefix-pass",
+            "note": "Not an infinite proof"}
+
 
 print("First nine vertices:")
 for point in vertices(dimension, 8):
     print(point)
-
-result = check(dimension, steps)
-print("\nFinite prefix:", result)</textarea></div></div>
+print("\nFinite prefix:", check(dimension, steps))</textarea></div></div>
 <div class="output-panel"><div class="panel-head"><strong>Output</strong><span id="run-status" role="status">Ready</span></div><pre id="python-output" aria-live="polite">Run the example to see its output here.</pre></div>
 <div class="workbench-controls"><button id="run-python" class="primary">▶ Run code</button><button id="stop-python" disabled>Stop</button><span id="code-help">Edit Python · Tab to move focus · Ctrl/⌘ + Enter to run</span></div>
 </div>

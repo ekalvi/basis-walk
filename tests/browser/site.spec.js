@@ -71,7 +71,7 @@ test('formula summary and 3D basis diagram are labeled and fit a small screen',a
 });
 test('styled workbench connects edited code to output on desktop and mobile',async({page})=>{
   await page.goto(base);
-  await expect(page.locator('.tok-keyword').first()).toHaveText('from');
+  await expect(page.locator('.tok-keyword').first()).toHaveText('def');
   const source=await page.locator('.source-panel').boundingBox();
   const output=await page.locator('.output-panel').boundingBox();
   expect(output.x).toBeGreaterThan(source.x);
@@ -84,7 +84,7 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   await page.keyboard.press('Escape');
   await expect(page.locator('#fullscreen-code')).toHaveAttribute('aria-pressed','false');
   await page.locator('#reset-code').click();
-  await expect(page.locator('#python-code')).toHaveValue(/from walks import vertices, check/);
+  await expect(page.locator('#python-code')).toHaveValue(/def letters\(dimension, steps\):/);
   await page.setViewportSize({width:390,height:844});
   // Read both rects in one frame: viewport resize can change scroll anchoring.
   await expect.poll(()=>page.evaluate(()=>{
@@ -107,8 +107,12 @@ test('Python worker can stop and reports blocked runtime',async({page})=>{
 });
 test('live pinned Pyodide executes exact checker',async({page})=>{
   test.skip(!process.env.TEST_PYODIDE,'Opt in to external CDN integration with TEST_PYODIDE=1');
+  const pythonDownloads=[];
+  page.on('request',request=>{if(new URL(request.url()).pathname.endsWith('/walks.py'))pythonDownloads.push(request.url());});
+  await page.route('**/walks.py',route=>route.abort());
   await page.goto(base);await page.click('#run-python');
   await expect(page.locator('#python-output')).toContainText('finite-prefix-pass',{timeout:120000});
+  expect(pythonDownloads).toEqual([]);
   await expect(page.locator('#run-python')).toBeEnabled();
   await expect(page.locator('#run-status')).toHaveText('Finished');
   await page.locator('#python-code').fill('print("edited output")');
