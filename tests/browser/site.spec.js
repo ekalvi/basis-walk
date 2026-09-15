@@ -28,11 +28,13 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect(page.locator('.results-table thead th')).toHaveCount(4);
   await expect(page.locator('.results-table tbody tr')).toHaveCount(1);
   await expect(page.locator('.results-table')).not.toContainText('Directions used');
-  await expect(page.locator('.results-table tbody td')).toHaveText(['No 7','No 4','No 4','No 3']);
+  await expect(page.locator('.results-table tbody td')).toHaveText(['<7','<4','<4','<3']);
   await expect(page.locator('.hero-copy > .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
   await expect(page.locator('.hero .lede')).toContainText('three, four and six dimensions');
   await expect(page.locator('.hero .llm-credit')).toContainText('GPT-6 Astra');
   await expect(page.locator('.hero .llm-credit svg[aria-hidden="true"]')).toHaveCount(1);
+  const authors=await page.locator('.hero .credit').boundingBox(),llm=await page.locator('.llm-credit').boundingBox();
+  expect(llm.y).toBeGreaterThanOrEqual(authors.y+authors.height);
   expect(await page.evaluate(()=>document.querySelector('#walk').getBoundingClientRect().bottom<innerHeight)).toBe(true);
   await page.screenshot({path:'.local/above-fold.png'});
   await page.locator('#view-options summary').click();
@@ -158,6 +160,10 @@ test('footer uses aligned local brand icons and wraps without overflow',async({p
   await expect(footer).toContainText('Made in Canada by ekalvi & Shallit and Belgium by Stijn');
   await expect(footer.getByRole('link',{name:'Shallit',exact:true})).toHaveAttribute('href','https://cs.uwaterloo.ca/~shallit/');
   await expect(footer.locator('.country-flag')).toHaveCount(2);
+  await expect(footer.getByRole('link',{name:/KU Leuven Campus Kulak-Kortrijk/})).toHaveAttribute('href','https://wms.cs.kuleuven.be/cs/english');
+  await expect(footer.getByRole('link',{name:/University of Waterloo/})).toHaveAttribute('href','https://cs.uwaterloo.ca/');
+  await expect(footer.locator('.institution-logo')).toHaveCount(2);
+  await expect.poll(()=>footer.locator('.institution-logo').evaluateAll(images=>images.every(img=>img.complete&&img.naturalWidth>0))).toBe(true);
   await expect(footer).not.toContainText('Mathematics');
   await expect(footer).not.toContainText('Software');
   await expect(page.locator('#sources')).toContainText('Stijn Cambie, Erik Kalviainen & Jeffrey Shallit');

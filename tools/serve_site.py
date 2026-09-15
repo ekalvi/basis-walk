@@ -14,6 +14,8 @@ ASSETS = {
     "python-worker.js": "text/javascript; charset=utf-8",
     "style.css": "text/css; charset=utf-8",
     "icon.svg": "image/svg+xml",
+    "logo-kulak.svg": "image/svg+xml",
+    "logo-waterloo.svg": "image/svg+xml",
     "walks.py": "text/plain; charset=utf-8",
 }
 

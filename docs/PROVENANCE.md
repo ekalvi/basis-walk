@@ -21,8 +21,8 @@ of this software. Do not assign the original paper's arXiv ID to this joint pape
 | 5 | 4 | No 4, by embedding the 4D theorem | Append one zero coordinate; not a separate five-direction theorem |
 | 6 | 6 | No 3 collinear vertices | Signed binary digit state; eight transitions collapse to six labels |
 
-The site uses the manuscript's “no k collinear” convention: 7, 4, 4, 3 in
-3D, 4D, embedded 5D, 6D. Equivalently, these are upper bounds of 6, 3, 3, 2
+The site's table shows <7, <4, <4, <3 vertices per line in
+3D, 4D, embedded 5D, 6D, matching the manuscript's “no k collinear” convention. Equivalently, these are upper bounds of 6, 3, 3, 2
 vertices per line, not claims about the smallest attainable bounds.
 
 The Python return-word substitution is A→AB, B→AACA, C→ADE, D→AACCE,
