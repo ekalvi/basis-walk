@@ -128,6 +128,19 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   })).toBe(true);
   await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
 });
+test('footer uses aligned local brand icons and wraps without overflow',async({page})=>{
+  await page.goto(base);
+  const footer=page.locator('.sitefoot');
+  await expect(footer.getByRole('link',{name:'q5m',exact:true})).toHaveAttribute('href','https://www.q5m.ai');
+  await expect(footer.getByRole('link',{name:'GitHub',exact:true})).toHaveAttribute('href','https://github.com/ekalvi/basis-walks');
+  await expect(footer.locator('svg[aria-hidden="true"]')).toHaveCount(2);
+  await expect(footer).toHaveCSS('text-transform','uppercase');
+  await expect(footer).toHaveCSS('border-top-width','1px');
+  await footer.screenshot({path:'.local/footer-desktop.png'});
+  await page.setViewportSize({width:320,height:740});
+  await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await footer.screenshot({path:'.local/footer-mobile.png'});
+});
 test('Python worker can stop and reports blocked runtime',async({page})=>{
   await page.route('https://cdn.jsdelivr.net/**',route=>route.abort());
   await page.goto(base);await page.click('#run-python');
