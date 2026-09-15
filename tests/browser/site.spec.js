@@ -197,6 +197,7 @@ test('footer uses aligned local brand icons and wraps without overflow',async({p
   await expect(footer.getByRole('link',{name:/KU Leuven Campus Kulak-Kortrijk/})).toHaveAttribute('href','https://wms.cs.kuleuven.be/cs/english');
   await expect(footer.getByRole('link',{name:/University of Waterloo/})).toHaveAttribute('href','https://cs.uwaterloo.ca/');
   await expect(footer.locator('.institution-logo')).toHaveCount(2);
+  for(const logo of await page.locator('.institution-logo').all())await expect(logo).toHaveCSS('filter','grayscale(1)');
   await expect.poll(()=>footer.locator('.institution-logo').evaluateAll(images=>images.every(img=>img.complete&&img.naturalWidth>0))).toBe(true);
   await expect(footer).not.toContainText('Mathematics');
   await expect(footer).not.toContainText('Software');
