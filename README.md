@@ -50,6 +50,17 @@ its document root**, never the repository root. `site/walks.py` is an intentiona
 browser-consumed download, not server-side code; the host must support serving
 it as a static file.
 
+For local development on systems supporting POSIX file-descriptor operations:
+
+```sh
+python3 tools/serve_site.py
+```
+
+Open `http://127.0.0.1:8000`. The development server serves an exact allowlist of
+browser assets, including `walks.py` as plain text. It rejects symlinks, unknown
+paths and directory listings. Managed development runners can supply `HOST` and
+`PORT`; no backend Python execution is enabled.
+
 The site uses no analytics, external fonts or initial CDN requests.
 
 Python runs on explicit click using pinned Pyodide 0.27.7 from jsDelivr, in a
