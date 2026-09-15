@@ -31,6 +31,7 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect(page.locator('.results-table tbody td')).toHaveText(['<7','<4','<4','<3']);
   await expect(page.locator('.hero-copy > .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
   await expect(page.locator('.hero .lede')).toContainText('three, four and six dimensions');
+  await expect(page.getByRole('link',{name:'arXiv · coming soon',exact:true})).toHaveAttribute('href','#sources');
   await expect(page.locator('.hero .llm-credit')).toContainText('GPT-6 Astra');
   await expect(page.locator('.hero .llm-credit svg[aria-hidden="true"]')).toHaveCount(1);
   const authors=await page.locator('.hero .credit').boundingBox(),llm=await page.locator('.llm-credit').boundingBox();
