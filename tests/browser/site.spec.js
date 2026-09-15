@@ -36,7 +36,11 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect(page.locator('.hero').getByRole('link',{name:'arXiv · coming soon',exact:true})).toHaveAttribute('href','#sources');
   await expect(page.locator('.hero .llm-credit')).toContainText('GPT-6 Astra');
   await expect(page.locator('.hero .llm-credit svg[aria-hidden="true"]')).toHaveCount(1);
-  const authors=await page.locator('.hero .credit').boundingBox(),llm=await page.locator('.llm-credit').boundingBox();
+  const credit=page.locator('.hero .credit');
+  await expect(credit.getByRole('link',{name:'Stijn Cambie',exact:true})).toHaveAttribute('href','https://arxiv.org/search/?query=Stijn+Cambie&searchtype=author');
+  await expect(credit.getByRole('link',{name:'Erik Kalviainen',exact:true})).toHaveAttribute('href','https://github.com/ekalvi');
+  await expect(credit.getByRole('link',{name:'Jeffrey Shallit',exact:true})).toHaveAttribute('href','https://cs.uwaterloo.ca/~shallit/');
+  const authors=await credit.boundingBox(),llm=await page.locator('.llm-credit').boundingBox();
   expect(llm.y).toBeGreaterThanOrEqual(authors.y+authors.height);
   const institutions=page.locator('.hero-institutions');
   await expect(institutions.getByRole('link',{name:/KU Leuven/})).toHaveAttribute('href','https://wms.cs.kuleuven.be/cs/english');
