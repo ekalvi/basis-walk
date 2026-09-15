@@ -1,7 +1,7 @@
 import {letters,vertices,shadow,colors,projectionColumns,compressForward,viewAngles,viewFrame,rotatePoint} from './walks.js';
 const $ = id => document.getElementById(id);
 const canvas = $('walk'), ctx = canvas.getContext('2d');
-let d=6,n=4096,points=[],projected=[],word=[],yaw=-.55,pitch=.6,zoom=1,playing=false,frame=0,drag=null;
+let d=3,n=4096,points=[],projected=[],word=[],yaw=-.55,pitch=.6,zoom=1,playing=false,frame=0,drag=null;
 let framing={center:[0,0,0],radius:1};
 const defaultCompression=()=>Math.min(512,Math.round(Math.sqrt(n)*(d===4||d===5?2:1)));
 function refresh() {

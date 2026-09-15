@@ -25,6 +25,8 @@ test('compact results, compressed views and projection explanation stay local',a
   page.on('request',request=>{if(!request.url().startsWith(base))external.push(request.url());});
   await page.goto(base);
   await expect(page.locator('#coordinates')).toContainText('P4096');
+  await expect(page.locator('#dimension')).toHaveValue('3');
+  await expect(page.locator('#view-label')).toContainText('3D · illustrative');
   await expect(page.locator('.results-table thead th')).toHaveCount(4);
   await expect(page.locator('.results-table tbody tr')).toHaveCount(1);
   await expect(page.locator('.results-table')).not.toContainText('Directions used');
@@ -119,7 +121,7 @@ test('long-prefix rendering, zoom and colors leave integer coordinates unchanged
   await expect(page.locator('#coordinates')).toHaveText(coordinates);
   await page.locator('#view-options summary').click();
   await page.selectOption('#color-mode','direction');
-  await expect(page.locator('#legend span')).toHaveCount(6);
+  await expect(page.locator('#legend span')).toHaveCount(3);
   await expect(page.locator('#coordinates')).toHaveText(coordinates);
   await page.click('#play');
   await expect(page.locator('#play')).toHaveText('Pause');
