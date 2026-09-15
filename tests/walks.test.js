@@ -18,6 +18,7 @@ test('display columns are the actual linear map in each dimension',()=>{
     for(let j=0;j<d;j++)assert.deepEqual(shadow(Array.from({length:d},(_,k)=>Number(j===k))),columns[j]);
   }
   assert.deepEqual(projectionColumns(5)[4],[0,0,0]);
+  vertices(6,8192).forEach((p,j)=>assert.equal(shadow(p)[2],j));
 });
 test('forward compression is display-only, linear and reversible',()=>{
   const points=[[0,0,0],[2,3,4],[10,0,0]],copy=structuredClone(points);

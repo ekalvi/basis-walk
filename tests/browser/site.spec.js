@@ -24,8 +24,13 @@ test('compact results, compressed views and projection explanation stay local',a
   page.on('pageerror',error=>errors.push(error.message));
   page.on('request',request=>{if(!request.url().startsWith(base))external.push(request.url());});
   await page.goto(base);
-  await expect(page.locator('#coordinates')).toContainText('P256');
-  await expect(page.locator('.results-table tbody tr')).toHaveCount(4);
+  await expect(page.locator('#coordinates')).toContainText('P4096');
+  await expect(page.locator('.results-table thead th')).toHaveCount(4);
+  await expect(page.locator('.results-table tbody tr')).toHaveCount(1);
+  await expect(page.locator('.results-table')).not.toContainText('Directions used');
+  expect(await page.evaluate(()=>document.querySelector('#walk').getBoundingClientRect().bottom<innerHeight)).toBe(true);
+  await page.screenshot({path:'.local/above-fold.png'});
+  await page.locator('#view-options summary').click();
   await expect(page.locator('.hero a[href="https://erdos-193.q5m.ai/"]')).toBeVisible();
   await expect(page.locator('#check')).toHaveCount(0);
   for(const d of ['3','4','5','6']){
@@ -41,10 +46,10 @@ test('compact results, compressed views and projection explanation stay local',a
     await expect(page.locator('#coordinates')).toHaveText(coordinates);
   }
   await page.click('#reset');
-  await expect(page.locator('#compression')).toHaveValue('1');
+  await expect(page.locator('#compression')).toHaveValue('64');
   await page.locator('#projection-details summary').click();
   await expect(page.locator('#map-caption')).toContainText('illustrative');
-  await expect(page.locator('#map-columns tr').first()).toContainText('0.7');
+  await expect(page.locator('#map-columns tr').first().locator('td')).toHaveText(['1','0','1']);
   await page.locator('#projection-details summary').click();
   await page.locator('#reveal').fill('32');
   await expect(page.locator('#coordinates')).toContainText('P32');
@@ -54,6 +59,26 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
   await page.screenshot({path:'.local/mobile.png',fullPage:true});
   expect(errors).toEqual([]);expect(external).toEqual([]);
+});
+test('long-prefix rendering, zoom and colors leave integer coordinates unchanged',async({page})=>{
+  await page.goto(base);
+  await page.locator('#steps').fill('8192');
+  await expect(page.locator('#coordinates')).toContainText('P8192');
+  await expect(page.locator('#step-count')).toHaveText('8,192');
+  const coordinates=await page.locator('#coordinates').textContent();
+  const before=await page.locator('#walk').screenshot();
+  await page.locator('#walk').hover();await page.mouse.wheel(0,-300);
+  await expect.poll(async()=>!(await page.locator('#walk').screenshot()).equals(before)).toBe(true);
+  await expect(page.locator('#coordinates')).toHaveText(coordinates);
+  await page.locator('#view-options summary').click();
+  await page.selectOption('#color-mode','direction');
+  await expect(page.locator('#legend span')).toHaveCount(6);
+  await expect(page.locator('#coordinates')).toHaveText(coordinates);
+  await page.click('#play');
+  await expect(page.locator('#play')).toHaveText('Pause');
+  await expect.poll(async()=>Number(await page.locator('#reveal').inputValue())).toBeGreaterThan(0);
+  await page.click('#play');
+  await expect(page.locator('#play')).toHaveText('Play');
 });
 test('formula summary and 3D basis diagram are labeled and fit a small screen',async({page})=>{
   await page.goto(base);
@@ -84,7 +109,16 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   await page.keyboard.press('Escape');
   await expect(page.locator('#fullscreen-code')).toHaveAttribute('aria-pressed','false');
   await page.locator('#reset-code').click();
-  await expect(page.locator('#python-code')).toHaveValue(/def letters\(dimension, steps\):/);
+  await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n\):/);
+  expect((await page.locator('#python-code').inputValue()).split('\n').length).toBeLessThanOrEqual(16);
+  await page.selectOption('#example','return');
+  await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n, d=4\):/);
+  await page.locator('#python-code').fill('print("saved draft")');
+  await page.selectOption('#example','six');
+  await page.selectOption('#example','return');
+  await expect(page.locator('#python-code')).toHaveValue('print("saved draft")');
+  await page.locator('#reset-code').click();
+  await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n, d=4\):/);
   await page.setViewportSize({width:390,height:844});
   // Read both rects in one frame: viewport resize can change scroll anchoring.
   await expect.poll(()=>page.evaluate(()=>{
@@ -111,6 +145,12 @@ test('live pinned Pyodide executes exact checker',async({page})=>{
   page.on('request',request=>{if(new URL(request.url()).pathname.endsWith('/walks.py'))pythonDownloads.push(request.url());});
   await page.route('**/walks.py',route=>route.abort());
   await page.goto(base);await page.click('#run-python');
+  await expect(page.locator('#python-output')).toContainText('[0, 0, 0, 0, 0, 0]',{timeout:120000});
+  await expect(page.locator('#run-status')).toHaveText('Finished');
+  await expect(page.locator('#python-output')).not.toContainText('finite-prefix-pass');
+  await page.selectOption('#example','check');
+  await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n\):[\s\S]*def check\(n=128\):/);
+  await page.click('#run-python');
   await expect(page.locator('#python-output')).toContainText('finite-prefix-pass',{timeout:120000});
   expect(pythonDownloads).toEqual([]);
   await expect(page.locator('#run-python')).toBeEnabled();

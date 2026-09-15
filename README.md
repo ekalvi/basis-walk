@@ -63,13 +63,15 @@ paths and directory listings. Managed development runners can supply `HOST` and
 
 The site uses no analytics, external fonts or initial CDN requests.
 
-The editor contains the complete, import-free Python example: generator, integer
-checker and usage. Tests keep it in agreement with `site/walks.py`. The worker
-executes only the editor's code; it does not fetch or inject a helper module.
+The editor opens with a short, import-free 6D constructor. The example selector
+also offers the 3D–5D constructor and a self-contained 6D exact checker. Every
+selected example is fully visible and editable; tests compare it with
+`site/walks.py`. The worker executes only the editor's code, without fetching or
+injecting a helper module.
 Python runs on explicit click using pinned Pyodide 0.27.7 from jsDelivr, in a
 terminable worker. Its runtime needs internet. Code editing is not a security
-sandbox. The example is capped at 512 steps; stop or the 120-second timeout
-terminates it. Each browser run starts fresh; durable larger work uses the CLI.
+sandbox. The optional exact checker is capped at 512 steps; stop or the 120-second timeout
+terminates browser execution. The visualization displays up to 8,192 steps. Each browser run starts fresh; durable larger work uses the CLI.
 
 ## Reproduce finite reports
 

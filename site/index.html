@@ -2,180 +2,102 @@
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="How few collinear vertices can an infinite positive basis walk have? Explore constructions in three to six dimensions, extending the questions behind Erdős Problem 193.">
-<title>Basis Walks · Dimensions and collinearity</title>
+<meta name="description" content="An infinite walk using only positive unit steps, with no three collinear vertices in six dimensions. Explore the constructions of Cambie, Kalviainen and Shallit.">
+<title>Basis Walks · Unit steps, few points on a line</title>
 <link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
 <script type="module" src="app.js"></script>
 </head>
 <body>
-<header class="site-header"><a class="brand" href="#">↗ Basis Walks</a><nav aria-label="Main"><a href="#explore">Explore</a><a href="#proof">The idea</a><a href="#code">Code</a><a href="#sources">Sources</a></nav></header>
+<header class="site-header"><a class="brand" href="#">Basis Walks</a><nav aria-label="Main"><a href="#explore">Explore</a><a href="#proof">The idea</a><a href="#code">Code</a><a href="#sources">Paper</a></nav></header>
 <main>
 <section class="hero">
-<p class="eyebrow">Beyond Erdős Problem 193</p>
-<h1>Only basis steps.<br>How few points on a line?</h1>
-<p class="lede">Take an infinite walk on the integer lattice, moving one unit forward along one coordinate axis at each step. What is the smallest possible bound on the number of vertices lying on any straight line?</p>
-<p class="hero-context"><a href="https://erdos-193.q5m.ai/">Erdős Problem 193 ↗</a> asks for a 3D lattice walk with a finite set of allowed steps and no three collinear vertices. Here the step rule is stricter: only the <a href="#basis-rule">positive standard basis vectors</a> +e<sub>0</sub>, …, +e<sub>d−1</sub> are allowed. Allowing more dimensions leads to stronger known avoidance bounds under this restriction.</p>
-<p class="credit">A companion to <cite>Brown-Gerver-Ramsey Theorems in Small Dimensions</cite><br>by <strong>Stijn Cambie, Erik Kalviainen, and Jeffrey Shallit</strong>.</p>
-<div class="table-wrap"><table class="results-table">
-<caption>Infinite constructions in the manuscript · upper bounds on collinearity</caption>
-<thead><tr><th scope="col">Dimension</th><th scope="col">Directions used</th><th scope="col">Vertices on any line</th><th scope="col">Construction</th></tr></thead>
-<tbody>
-<tr><th scope="row"><a href="#explore" data-d="3">3D</a></th><td>3 of 3</td><td>At most 6 <span class="bound-note">(no 7)</span></td><td>Subdivided return walk</td></tr>
-<tr><th scope="row"><a href="#explore" data-d="4">4D</a></th><td>4 of 4</td><td>At most 3 <span class="bound-note">(no 4)</span></td><td>Four return directions</td></tr>
-<tr><th scope="row"><a href="#explore" data-d="5">5D</a></th><td>4 of 5</td><td>At most 3 <span class="bound-note">(no 4)</span></td><td>4D embedding; one unused axis</td></tr>
-<tr><th scope="row"><a href="#explore" data-d="6">6D</a></th><td>6 of 6</td><td>At most 2 <span class="bound-note">(no 3)</span></td><td>Binary-state construction</td></tr>
-</tbody></table></div>
-<p class="note">The manuscript gives infinite proofs, not just plotted examples. This companion does not claim optimality, independent mathematical review or formal verification.</p>
-</section>
-<section id="explore">
-<div class="section-head"><div><p class="eyebrow">01 / Explore</p><h2>See the structure behind the drift.</h2></div></div>
-<p class="section-intro">Positive steps carry the walk steadily forward, making a long prefix look almost straight. Compress that overall direction to bring the smaller-scale turns into view. The coordinate readout always shows the original integer vertex.</p>
-<div class="controls"><label>Dimension <select id="dimension"><option value="3">3D · no 7 collinear</option><option value="4">4D · no 4 collinear</option><option value="5">5D · embedded 4D walk</option><option value="6" selected>6D · no 3 collinear</option></select></label><label class="slider">Steps <input id="steps" type="range" min="16" max="512" step="16" value="256"><output id="step-count">256</output></label><button id="play">Play</button><button id="reset">Reset view</button></div>
-<div class="controls view-controls"><label class="slider">Forward compression <input id="compression" type="range" min="1" max="40" value="1"><output id="compression-value">1 (off)</output></label><button id="uncompressed">Uncompressed</button><span class="note">Display only · changes lengths and angles</span></div>
-<div class="viewport"><canvas id="walk" tabindex="0" role="img" aria-label="Illustrative walk view. Drag or use arrow keys to rotate. Compression changes displayed lengths and angles; original coordinates appear below."></canvas><span class="canvas-label" id="view-label"></span><span class="canvas-hint">Drag / arrow keys to rotate</span></div>
-<div class="controls compact"><label>Reveal vertex <input id="reveal" type="range" min="0" max="256" value="256"><output id="vertex-number">256</output></label><span id="coordinates" class="mono"></span></div>
-<div id="legend" class="legend"></div>
-<p id="projection" class="note"></p>
-<details id="projection-details"><summary>How does a higher-dimensional walk fit on this screen?</summary><div class="projection-explanation">
-<ol><li><strong>Start in the original lattice.</strong> P = (x<sub>0</sub>, …, x<sub>d−1</sub>) records the number of steps in each direction. Their sum is the vertex index.</li><li><strong>Map to three display coordinates.</strong> Each direction e<sub>j</sub> gets a 3D vector v<sub>j</sub>, listed below. The displayed point is Q = x<sub>0</sub>v<sub>0</sub> + ⋯ + x<sub>d−1</sub>v<sub>d−1</sub>. This is the identity in 3D, the manuscript’s return-displacement map in 4D/5D, and an illustrative linear map in 6D.</li><li><strong>Optionally compress the overall direction.</strong> For the complete selected prefix, take the unit vector u from Q<sub>0</sub> to Q<sub>N</sub>. With compression factor c, use Q′ = Q − (1 − 1/c)(Q · u)u. Only the component parallel to u is shortened. At c = 1, nothing is compressed; this is not a different walk.</li><li><strong>Rotate, then draw on a flat screen.</strong> The initial camera is chosen to show the broad face of the selected point cloud rather than an edge-on line. You can rotate it freely. We take two screen coordinates, with one common scale to fit the canvas.</li></ol>
-<div class="table-wrap"><table class="map-table"><caption id="map-caption">Vectors used for this view</caption><thead><tr><th scope="col">Original direction</th><th scope="col">Display X</th><th scope="col">Display Y</th><th scope="col">Display Z</th></tr></thead><tbody id="map-columns"></tbody></table></div>
-<p><strong>The picture is not a collinearity test.</strong> Reducing dimension can merge distinct points and introduce apparent alignments. The 6D view is not the manuscript’s five-real-dimensional auxiliary space and proves no 3D avoidance theorem. All mathematical claims and exact computations concern the original integer coordinates.</p>
-</div></details>
+<div class="hero-copy">
+<p class="eyebrow">Beyond Erdős 193</p>
+<h1>Only unit steps.<br>No three in line.</h1>
+<p class="lede">In <strong>six dimensions</strong>, you can walk forever, moving one unit forward along one axis at a time, without ever visiting three collinear vertices.</p>
+<p class="hero-context"><a href="https://erdos-193.q5m.ai/">Erdős 193</a> avoids triples with a finite menu of 3D moves. What if every move must be a <a href="#basis-rule">positive basis step</a>? In 6D, the no-three result survives.</p>
+<div class="hero-actions"><a class="button primary" href="#code">Run the constructor</a><a class="button" href="#proof">Why it works ↓</a></div>
+<p class="credit">Constructions by <strong>Stijn Cambie, Erik Kalviainen &amp; Jeffrey Shallit</strong></p>
+<table class="results-table"><caption>Manuscript bounds · maximum vertices on a line</caption><thead><tr><th scope="col"><a href="#explore" data-d="3">3D</a></th><th scope="col"><a href="#explore" data-d="4">4D</a></th><th scope="col"><a href="#explore" data-d="5">5D*</a></th><th scope="col"><a href="#explore" data-d="6">6D</a></th></tr></thead><tbody><tr><td>6</td><td>3</td><td>3</td><td>2</td></tr></tbody></table>
+<p class="table-note">*5D embeds the 4D walk; one direction is unused.</p>
+</div>
+<div class="explorer" id="explore">
+<div class="viewport"><canvas id="walk" tabindex="0" role="img" aria-label="Illustrative projection of a basis walk. Drag or use arrow keys to rotate; scroll to zoom."></canvas><span class="canvas-label" id="view-label"></span><span class="canvas-hint">Drag to rotate · Scroll to zoom</span></div>
+<div class="controls explorer-controls"><label class="sr-only" for="dimension">Dimension</label><select id="dimension"><option value="3">3D · no 7 collinear</option><option value="4">4D · no 4 collinear</option><option value="5">5D · 4D embedding</option><option value="6" selected>6D · no 3 collinear</option></select><label class="slider">Steps <input id="steps" type="range" min="128" max="8192" step="128" value="4096"><output id="step-count">4,096</output></label><button id="play">Play</button><button id="reset" aria-label="Reset view">↺</button></div>
+<details class="view-options" id="view-options"><summary>View controls &amp; original coordinates</summary><div class="controls"><label class="slider">Forward compression <input id="compression" type="range" min="1" max="512" value="1"><output id="compression-value">Off</output></label><button id="uncompressed">Uncompressed</button><label>Color <select id="color-mode"><option value="progress">Walk order</option><option value="direction">Step direction</option></select></label></div><div id="legend" class="legend"></div><div class="controls"><label class="slider">Vertex <input id="reveal" type="range" min="0" max="4096" value="4096"><output id="vertex-number">4096</output></label></div><p id="coordinates" class="mono"></p></details>
+<details id="projection-details"><summary>How is this projected from higher dimensions?</summary><p id="projection"></p><p>For P = (x₀, …, x<sub>d−1</sub>), the 3D display point is <strong>Q = Σ x<sub>j</sub>v<sub>j</sub></strong>. These are the actual vectors v<sub>j</sub> used:</p><div class="table-wrap"><table class="map-table"><caption id="map-caption">Display vectors</caption><thead><tr><th scope="col">Direction</th><th scope="col">X</th><th scope="col">Y</th><th scope="col">Z</th></tr></thead><tbody id="map-columns"></tbody></table></div><p>Optional compression shortens the component along the prefix’s endpoint direction u: <strong>Q′ = Q − (1 − 1/c)(Q · u)u</strong>. It changes lengths and angles, not the underlying walk. We then rotate, drop depth, and scale uniformly to fit the screen.</p><p>The initial camera shows the broad face of the walk. Projection can create apparent alignments: <strong>the picture is not a collinearity test</strong>. The 6D map is illustrative, not the manuscript’s five-real-dimensional auxiliary space. Claims concern the original integer coordinates.</p></details>
+</div>
 </section>
 <section id="proof">
-<p class="eyebrow">02 / The idea</p><h2>From letter counts to collinearity.</h2>
-<div class="basis-rule" id="basis-rule">
-<div class="formula-summary">
-<h3>The construction in two formulas</h3>
-<p>Choose a word w with letters 0, …, d − 1. Each letter selects one positive unit step:</p>
+<p class="eyebrow">The key idea</p><h2>Count letters. Prevent alignment.</h2>
+<div class="basis-rule" id="basis-rule"><div class="formula-summary"><p>A letter j means “take step e<sub>j</sub>.” The vertex is just the word’s running letter count:</p>
 <math display="block" aria-label="P zero equals zero. P n equals the sum of basis vectors e sub w i, for i from zero to n minus one."><mrow><msub><mi>P</mi><mn>0</mn></msub><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1em"/><msub><mi>P</mi><mi>n</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></munderover><msub><mi>e</mi><msub><mi>w</mi><mi>i</mi></msub></msub></mrow></math>
-<p>For a &lt; b &lt; c, the three vertices lie on one line exactly when the two intervening blocks have equal step proportions:</p>
+<p>Three vertices a &lt; b &lt; c align exactly when the intervening blocks have the same letter proportions:</p>
 <math display="block" aria-label="P b minus P a, divided by b minus a, equals P c minus P b, divided by c minus b."><mrow><mfrac><mrow><msub><mi>P</mi><mi>b</mi></msub><mo>−</mo><msub><mi>P</mi><mi>a</mi></msub></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mi>c</mi></msub><mo>−</mo><msub><mi>P</mi><mi>b</mi></msub></mrow><mrow><mi>c</mi><mo>−</mo><mi>b</mi></mrow></mfrac></mrow></math>
-<p class="formula-takeaway"><strong>The strategy:</strong> construct the word so equal proportions cannot persist across too many consecutive blocks. For k collinear vertices, all k − 1 block ratios must agree—even if the blocks have different lengths.</p>
-</div>
-<figure class="basis-diagram">
-<svg viewBox="0 0 300 250" role="img" aria-labelledby="basis-diagram-title basis-diagram-desc">
-<title id="basis-diagram-title">The three positive standard basis vectors in 3D</title>
-<desc id="basis-diagram-desc">Three arrows leave the origin: e zero equals (1, 0, 0), e one equals (0, 1, 0), and e two equals (0, 0, 1). Each moves one unit along just one coordinate axis. This is an illustrative flat drawing of three perpendicular spatial directions.</desc>
-<defs><marker id="basis-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/></marker></defs>
-<g fill="none" stroke-width="2.5" marker-end="url(#basis-arrow)"><path d="M150 150 L246 193" stroke="#3183df"/><path d="M150 150 L54 193" stroke="#d58727"/><path d="M150 150 L150 39" stroke="#179b80"/></g>
-<circle cx="150" cy="150" r="4" fill="#192332"/>
-<g class="axis-label"><text x="254" y="185" fill="#2672c9">e₀</text><text x="35" y="185" fill="#9b5a10">e₁</text><text x="166" y="44" fill="#127b65">e₂</text></g>
-<g class="axis-coordinate"><text x="226" y="217" text-anchor="middle">(1, 0, 0)</text><text x="73" y="217" text-anchor="middle">(0, 1, 0)</text><text x="150" y="21" text-anchor="middle">(0, 0, 1)</text><text x="150" y="173" text-anchor="middle">origin</text></g>
-</svg>
-<figcaption>Three allowed steps in 3D.<br>One coordinate increases by 1; the others stay fixed. <span>Illustrative 2D view of perpendicular 3D axes.</span></figcaption>
-</figure>
-</div>
-<div class="proof-grid"><article><span class="number">1</span><h3>Words become walks</h3><p>Read a letter j, take a step e<sub>j</sub>. Each vertex is a prefix’s letter-count vector. Consecutive blocks with identical letter proportions make collinear boundary vertices, even when their lengths differ.</p></article><article><span class="number">2</span><h3>Descend through digits</h3><p>The constructions repeat at base-2 or base-3 scales. Equal-state chords obey an exact valuation identity: the power of 2 or 3 dividing a quadratic expression matches the power dividing the index difference.</p></article><article><span class="number">3</span><h3>Too few residues</h3><p>Collinearity would force pairwise gaps to have the same valuation. Three indices cannot do this in base 2, nor four in base 3. The auxiliary geometry turns that contradiction into the lattice bounds.</p></article></div>
-<details><summary>How the three results fit together</summary><div class="details-body"><p><strong>6D:</strong> square-corner state tags force any hypothetical collinear triple into one state. The Gaussian norm and 2-adic identity rule it out. Six auxiliary step types become six standard basis directions.</p><p><strong>4D:</strong> take returns to one state in the ternary construction. Their four displacement types give a four-letter walk. The quadratic form X² − 3Y² and a modulo-3 contradiction exclude four collinear vertices.</p><p><strong>3D:</strong> transform those four return steps into two coordinate steps and two diagonal steps. Subdivide the diagonals. The vertices lie in a set S and its translate S + e₂, each meeting any line at most three times. Together, at most six.</p></div></details>
-<p class="note">Still open in this snapshot: no-three-collinear positive-basis walks in 4D or 5D, and no-four-collinear in 3D. The related original Erdős 193 theorem allows a different, arbitrary finite step set.</p>
+<p><strong>Choose a word that prevents these repetitions.</strong> For k collinear vertices, all k − 1 block ratios must agree, even with unequal block lengths.</p></div>
+<figure class="basis-diagram"><svg viewBox="0 0 300 250" role="img" aria-labelledby="basis-diagram-title basis-diagram-desc"><title id="basis-diagram-title">The three positive standard basis vectors in 3D</title><desc id="basis-diagram-desc">From the origin: e zero is (1, 0, 0), e one is (0, 1, 0), e two is (0, 0, 1). An illustrative flat drawing of three perpendicular spatial directions.</desc><defs><marker id="basis-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/></marker></defs><g fill="none" stroke-width="2.5" marker-end="url(#basis-arrow)"><path d="M150 150 L246 193" stroke="#3183df"/><path d="M150 150 L54 193" stroke="#d58727"/><path d="M150 150 L150 39" stroke="#179b80"/></g><circle cx="150" cy="150" r="4" fill="#192332"/><g class="axis-label"><text x="254" y="185" fill="#2672c9">e₀</text><text x="35" y="185" fill="#9b5a10">e₁</text><text x="166" y="44" fill="#127b65">e₂</text></g><g class="axis-coordinate"><text x="226" y="217" text-anchor="middle">(1, 0, 0)</text><text x="73" y="217" text-anchor="middle">(0, 1, 0)</text><text x="150" y="21" text-anchor="middle">(0, 0, 1)</text></g></svg><figcaption>One coordinate +1. All others unchanged.<span>Illustrative 2D view of the 3D basis.</span></figcaption></figure></div>
+<details><summary>Where the bounds come from</summary><p><strong>6D:</strong> a binary-state recurrence and a 2-adic identity exclude collinear triples. <strong>4D:</strong> ternary-state returns give four step types; a modulo-3 contradiction excludes four collinear vertices. <strong>3D:</strong> subdividing the diagonal return steps gives two sets, each meeting a line at most three times—six in total.</p><p>The open cases in this snapshot include no-three in 4D/5D and no-four in 3D. The 5D example is only the 4D embedding.</p></details>
 </section>
-<section id="code"><p class="eyebrow">03 / Reproduce</p><h2>Edit the code. Inspect the output.</h2><p>The complete generator and exact checker are below: no Python imports or hidden helper code. Edit the source, dimension or step count, then run; the output stays alongside the code that produced it.</p>
-<div class="workbench" id="workbench">
-<div class="source-panel"><div class="panel-head"><strong>example.py</strong><div class="panel-actions"><button id="fullscreen-code" aria-pressed="false">Full screen</button><button id="reset-code">Reset</button><a href="walks.py" download>walks.py ↓</a></div></div>
-<div class="editor"><pre id="code-highlight" aria-hidden="true"><code></code></pre><label for="python-code" class="sr-only">Editable Python example</label><textarea id="python-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="code-help"># Basis Walks — self-contained Python, no imports.
-# Constructions: Stijn Cambie, Erik Kalviainen, Jeffrey Shallit.
-# Finite checks are not infinite proofs.
-
-# Edit these parameters, or any of the code below.
-dimension = 6  # Choose 3, 4, 5 (4D embedding), or 6.
-steps = 128   # At most 512 for this small browser check.
-
-BOUNDS = {3: 7, 4: 4, 5: 4, 6: 3}
-
-
-def letters(dimension, steps):
-    """Generate the direction of each positive unit step."""
-    if dimension not in BOUNDS or not isinstance(steps, int) or steps < 0:
-        raise ValueError("Choose dimension 3–6 and a nonnegative step count")
-    if dimension == 6:
-        # Binary-state recurrence, modulo 4.
-        states = [0] * (steps + 1)
-        for n in range(1, steps + 1):
-            states[n] = ((n % 2) - states[n // 2]) % 4
-        coding = {
-            (0, 1): 0, (1, 2): 1, (2, 3): 2, (3, 0): 3,
-            (0, 2): 4, (1, 3): 4, (2, 0): 5, (3, 1): 5,
-        }
-        return [coding[states[n], states[n + 1]] for n in range(steps)]
-
-    # Five-letter return substitution for 3D and 4D.
-    # In 5D, direction 4 is unused: this is the 4D embedding.
-    substitution = dict(zip("ABCDE", ("AB", "AACA", "ADE", "AACCE", "ADCCA")))
-    coding = dict(zip("ABCDE", ("0", "1", "20", "21", "21") if dimension == 3
-                      else ("0", "1", "2", "3", "3")))
-    word = "A"
-    while len(word) < steps:
-        word = "".join(substitution[a] for a in word)
-    return [int(a) for a in "".join(coding[a] for a in word)[:steps]]
-
-
-def vertices(dimension, steps):
-    """Original integer coordinates, not a display projection."""
-    points = [[0] * dimension]
-    for direction in letters(dimension, steps):
-        point = points[-1].copy()
-        point[direction] += 1
-        points.append(point)
+<section id="code"><div class="section-head"><div><p class="eyebrow">The constructor</p><h2>A short rule. An infinite walk.</h2></div><label class="example-choice">Example <select id="example"><option value="six">6D constructor</option><option value="return">3D–5D constructor</option><option value="check">6D + exact check</option></select></label></div>
+<div class="workbench" id="workbench"><div class="source-panel"><div class="panel-head"><strong id="source-name">basis_walk.py</strong><div class="panel-actions"><button id="fullscreen-code" aria-pressed="false">Full screen</button><button id="reset-code">Reset</button><a href="walks.py" download>All checkers ↓</a></div></div><div class="editor"><pre id="code-highlight" aria-hidden="true"><code></code></pre><label for="python-code" class="sr-only">Editable Python example</label><textarea id="python-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="code-help">def basis_walk(n):
+    directions = {(0,1):0, (1,2):1, (2,3):2, (3,0):3,
+                  (0,2):4, (1,3):4, (2,0):5, (3,1):5}
+    states, point = [0] * (n + 1), [0] * 6
+    for k in range(1, n + 1):
+        states[k] = (k % 2 - states[k // 2]) % 4
+    points = [point.copy()]
+    for a, b in zip(states, states[1:]):
+        point[directions[a, b]] += 1
+        points.append(point.copy())
     return points
 
+for point in basis_walk(12):
+    print(point)</textarea></div></div><div class="output-panel"><div class="panel-head"><strong>Output</strong><span id="run-status" role="status">Ready</span></div><pre id="python-output" aria-live="polite">Run to see the first 13 vertices.</pre></div><div class="workbench-controls"><button id="run-python" class="primary">▶ Run code</button><button id="stop-python" disabled>Stop</button><span id="code-help">No imports · Ctrl/⌘ + Enter to run</span></div></div>
+<p class="note code-note">Runs locally in a disposable Python worker; first run downloads Pyodide. 120-second limit. Don’t paste secrets or untrusted code. Finite checks are not infinite proofs.</p>
+<template id="return-example">def basis_walk(n, d=4):
+    substitution = dict(zip("ABCDE", ("AB", "AACA", "ADE", "AACCE", "ADCCA")))
+    code = ("0", "1", "20", "21", "21") if d == 3 else ("0", "1", "2", "3", "3")
+    coding, word = dict(zip("ABCDE", code)), "A"
+    while len(word) &lt; n:
+        word = "".join(substitution[a] for a in word)
+    point, points = [0] * d, [[0] * d]
+    for direction in "".join(coding[a] for a in word)[:n]:
+        point[int(direction)] += 1
+        points.append(point.copy())
+    return points
 
-def gcd(a, b):
-    """Euclidean algorithm: no library dependency."""
+# Choose 3, 4, or 5. In 5D the last coordinate stays zero.
+for point in basis_walk(12, d=4):
+    print(point)</template>
+<template id="check-example">def gcd(a, b):
     while b:
         a, b = b, a % b
     return a
 
 
-def anchor_check(points, anchor, forbidden):
-    """Group later vertices by exact primitive integer direction."""
-    directions = {}
-    for j in range(anchor + 1, len(points)):
-        delta = [b - a for a, b in zip(points[anchor], points[j])]
-        divisor = 0
-        for coordinate in delta:
-            divisor = gcd(divisor, coordinate)
-        if not divisor:
-            raise ValueError("Duplicate vertices are not supported")
-        key = tuple(x // divisor for x in delta)
-        group = directions.setdefault(key, [])
-        group.append(j)
-        if len(group) >= forbidden - 1:
-            return [anchor] + group[:forbidden - 1]
-    return None
-
-
-def check(dimension, steps):
-    """Every forbidden set has an earliest anchor; unequal gaps count too."""
-    if not isinstance(steps, int) or not 0 <= steps <= 512:
-        raise ValueError("Browser check limited to 0–512 steps")
-    points = vertices(dimension, steps)
-    for anchor in range(len(points)):
-        witness = anchor_check(points, anchor, BOUNDS[dimension])
-        if witness:
-            return {"dimension": dimension, "steps": steps,
-                    "forbidden": BOUNDS[dimension],
-                    "status": "counterexample", "witness": witness}
-    return {"dimension": dimension, "steps": steps, "vertices": len(points),
-            "forbidden": BOUNDS[dimension], "status": "finite-prefix-pass",
+def check(n=128):
+    if not isinstance(n, int) or not 0 &lt;= n &lt;= 512:
+        raise ValueError("Choose 0–512 steps for this finite check")
+    points = basis_walk(n)
+    for a, origin in enumerate(points):
+        directions = {}
+        for b in range(a + 1, len(points)):
+            delta = [x - y for x, y in zip(points[b], origin)]
+            divisor = 0
+            for coordinate in delta:
+                divisor = gcd(divisor, coordinate)
+            if not divisor:
+                raise ValueError("Duplicate vertices")
+            key = tuple(x // divisor for x in delta)
+            if key in directions:
+                return {"status": "counterexample", "witness": [a, directions[key], b]}
+            directions[key] = b
+    return {"status": "finite-prefix-pass", "vertices": len(points),
             "note": "Not an infinite proof"}
 
-
-print("First nine vertices:")
-for point in vertices(dimension, 8):
-    print(point)
-print("\nFinite prefix:", check(dimension, steps))</textarea></div></div>
-<div class="output-panel"><div class="panel-head"><strong>Output</strong><span id="run-status" role="status">Ready</span></div><pre id="python-output" aria-live="polite">Run the example to see its output here.</pre></div>
-<div class="workbench-controls"><button id="run-python" class="primary">▶ Run code</button><button id="stop-python" disabled>Stop</button><span id="code-help">Edit Python · Tab to move focus · Ctrl/⌘ + Enter to run</span></div>
-</div>
-<p class="note">Python loads only on Run, using pinned Pyodide 0.27.7 from jsDelivr. Each run uses a fresh, terminable worker with a 120-second limit. Edited code can make network requests: do not paste secrets or untrusted code. Finite checks are not infinite proofs; larger reproducible scans use the repository’s checkpointed CLI.</p>
+print(check(128))</template>
 </section>
-<section id="sources"><p class="eyebrow">04 / Sources & credit</p><h2>The mathematics, and the work behind it.</h2>
-<p><strong>Stijn Cambie · Erik Kalviainen · Jeffrey Shallit</strong><br><cite>Brown-Gerver-Ramsey Theorems in Small Dimensions.</cite> Manuscript snapshot, September 2026. This site follows its 3D, 4D, and 6D results. A public link to this joint paper will be added when available and approved.</p>
-<div class="links"><a href="https://github.com/ekalvi/basis-walks">Companion GitHub ↗</a><a href="https://arxiv.org/abs/2609.01766">Original Cambie–Kalviainen paper ↗</a><a href="https://erdos-193.q5m.ai/">Erdős 193 companion ↗</a></div>
-<p>The original finite-step result is by <strong>Stijn Cambie and Erik Kalviainen</strong>. Background and earlier bounds include work by Brown, Montgomery, Gerver, Ramsey, and Lidbetter. This site is an explanatory and computational companion, not a replacement for their papers.</p>
-<p class="note">Site and validation code maintained by Erik Kalviainen with AI coding assistance. Paper authorship does not imply collaborator review of this software. The manuscript has its own AI-use declaration. Author review, public-paper linking, and publication remain separate steps.</p>
-</section>
+<section id="sources"><p class="eyebrow">Paper &amp; credit</p><p><strong>Stijn Cambie, Erik Kalviainen &amp; Jeffrey Shallit</strong><br><cite>Brown-Gerver-Ramsey Theorems in Small Dimensions.</cite> Unpublished manuscript; public link forthcoming.</p><div class="links"><a href="https://arxiv.org/abs/2609.01766">Related Cambie–Kalviainen paper ↗</a><a href="https://erdos-193.q5m.ai/">Erdős 193 ↗</a><a href="https://github.com/ekalvi/basis-walks">Source &amp; reproducible checks ↗</a></div><details><summary>Scope &amp; software attribution</summary><p>The stated infinite bounds are the manuscript’s results, not conclusions from these pictures or finite scans. No optimality, independent human review or formal verification is claimed. Software maintained by Erik Kalviainen with AI assistance; paper authorship does not imply review of this software. Public manuscript distribution and licensing remain subject to author approval.</p></details></section>
 </main>
 <footer class="sitefoot"><span>Software by <a href="https://github.com/ekalvi">ekalvi</a> · Mathematics by Cambie, Kalviainen &amp; Shallit</span><span class="right"><a href="https://www.q5m.ai">q5m</a><a href="https://github.com/ekalvi/basis-walks">GitHub ↗</a></span></footer>
 </body></html>

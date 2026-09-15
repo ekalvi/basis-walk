@@ -1,15 +1,15 @@
 import {letters,vertices,shadow,colors,projectionColumns,compressForward,viewAngles} from './walks.js';
 const $ = id => document.getElementById(id);
 const canvas = $('walk'), ctx = canvas.getContext('2d');
-let d=6,n=256,points=[],projected=[],word=[],yaw=-.55,pitch=.6,playing=false,frame=0,drag=null;
+let d=6,n=4096,points=[],projected=[],word=[],yaw=-.55,pitch=.6,zoom=1,playing=false,frame=0,drag=null;
+const defaultCompression=()=>Math.min(512,Math.round(Math.sqrt(n)*(d===4||d===5?2:1)));
 function refresh() {
-  stop(); const nextD=Number($('dimension').value);
-  if(nextD!==d)$('compression').value=nextD===6?1:16;
-  d=nextD; n=Number($('steps').value);
+  stop(); d=Number($('dimension').value); n=Number($('steps').value);
+  $('compression').value=defaultCompression();zoom=1;
   points=vertices(d,n); word=letters(d,n);
-  $('step-count').value=n; $('reveal').max=n; $('reveal').value=n;
+  $('step-count').value=n.toLocaleString(); $('reveal').max=n; $('reveal').value=n;
   $('projection').textContent=d===3?'3D coordinates → optional forward compression → rotation → 2D screen. The readout below the canvas is unmodified.':d===6?
-    '6D lattice → illustrative 3D linear map → optional forward compression → rotation → 2D screen. This is not a certified 3D avoidance construction.':
+    '6D lattice → illustrative 3D map → forward compression → rotation → 2D screen. Here X = x₀ − x₂ + x₄ − x₅, Y = x₁ − x₃ + x₄ − x₅, and Z = x₀ + ⋯ + x₅ is the step index. This is not a certified 3D avoidance construction.':
     `${d}D lattice → manuscript’s 3D return-displacement map → optional forward compression → rotation → 2D screen.${d===5?' The fifth coordinate is always zero; its display vector is also zero.':''}`;
   $('map-caption').textContent=d===3?'3D: identity map before compression':d===6?'6D: chosen illustrative vectors, not the manuscript’s auxiliary space':`${d}D: return-displacement vectors${d===5?' with a zero fifth column':''}`;
   $('map-columns').replaceChildren(...projectionColumns(d).map((v,j)=>{
@@ -18,17 +18,21 @@ function refresh() {
     for(const value of v){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}
     return row;
   }));
+  updateLegend();updateProjection(true);
+}
+function updateLegend(){
+  if($('color-mode').value==='progress'){$('legend').textContent='Color follows walk order: blue → green.';return;}
   $('legend').replaceChildren(...Array.from({length:d},(_,j)=>{
     const el=document.createElement('span'), swatch=document.createElement('i');
     swatch.style.setProperty('--color',colors[j]); el.append(swatch,`e${'₀₁₂₃₄₅'[j]}${d===5&&j===4?' · unused':''}`); return el;
-  })); updateProjection(true);
+  }));
 }
 function updateProjection(reframe=false){
   const factor=Number($('compression').value);
   projected=compressForward(points.map(shadow),factor);
   if(reframe)({yaw,pitch}=viewAngles(projected));
-  $('compression-value').value=factor===1?'1 (off)':`1/${factor}`;
-  $('view-label').textContent=`${d===3?'3D':`${d}D → 3D`} · ${factor===1?'uncompressed':`forward scale 1/${factor}`} · illustrative view`;
+  $('compression-value').value=factor===1?'Off':`1/${factor}`;
+  $('view-label').textContent=`${d===3?'3D':`${d}D → 3D`} · illustrative · ${n.toLocaleString()} steps · ${factor===1?'uncompressed':`forward scale 1/${factor}`}`;
   draw();
 }
 function draw() {
@@ -39,29 +43,36 @@ function draw() {
   ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,width,height);
   const rotated=projected.map(([x,y,z])=>{
     const a=x*Math.cos(yaw)-y*Math.sin(yaw),b=x*Math.sin(yaw)+y*Math.cos(yaw);
-    return [a,b*Math.sin(pitch)-z*Math.cos(pitch)];
+    return [a,b*Math.sin(pitch)-z*Math.cos(pitch),b*Math.cos(pitch)+z*Math.sin(pitch)];
   });
   const xs=rotated.map(p=>p[0]),ys=rotated.map(p=>p[1]);
   const xmin=Math.min(...xs),xmax=Math.max(...xs),ymin=Math.min(...ys),ymax=Math.max(...ys);
-  const scale=Math.min((width-90)/Math.max(1,xmax-xmin),(height-100)/Math.max(1,ymax-ymin));
+  const scale=zoom*Math.min((width-64)/Math.max(1,xmax-xmin),(height-76)/Math.max(1,ymax-ymin));
   const mapped=rotated.map(([x,y])=>[width/2+(x-(xmin+xmax)/2)*scale,height/2+(y-(ymin+ymax)/2)*scale]);
   const reveal=Number($('reveal').value);
-  ctx.lineWidth=1;ctx.strokeStyle='#dce4ee';ctx.beginPath();
+  ctx.lineWidth=.65;ctx.strokeStyle='#162435';ctx.beginPath();
   mapped.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();
-  ctx.lineWidth=2.2;ctx.lineCap='round';
+  const depths=rotated.map(p=>p[2]),zmin=Math.min(...depths),zrange=Math.max(...depths)-zmin||1;
+  const directionColor=$('color-mode').value==='direction';
+  ctx.lineWidth=n>2048?1:1.5;ctx.lineCap='round';
   for(let j=0;j<reveal;j++){
-    ctx.strokeStyle=colors[word[j]];ctx.beginPath();ctx.moveTo(...mapped[j]);ctx.lineTo(...mapped[j+1]);ctx.stroke();
+    ctx.globalAlpha=.5+.5*(depths[j]-zmin)/zrange;
+    ctx.strokeStyle=directionColor?colors[word[j]]:`hsl(${205-55*j/n} 78% 64%)`;
+    ctx.beginPath();ctx.moveTo(...mapped[j]);ctx.lineTo(...mapped[j+1]);ctx.stroke();
   }
-  for(const [index,radius,color] of [[0,3,'#647184'],[reveal,4,'#192332']]){
+  ctx.globalAlpha=1;
+  for(const [index,radius,color] of [[0,2.5,'#7298be'],[reveal,3,'#e3f8ef']]){
     ctx.beginPath();ctx.arc(...mapped[index],radius,0,Math.PI*2);ctx.fillStyle=color;ctx.fill();
   }
   $('vertex-number').value=reveal;$('coordinates').textContent=`P${reveal} = (${points[reveal].join(', ')})`;
 }
 function stop(){playing=false;cancelAnimationFrame(frame);$('play').textContent='Play';}
 let last=0;
-function tick(time){if(!playing)return;if(time-last>40){last=time;let v=Number($('reveal').value);if(v>=n){stop();return;}$('reveal').value=v+1;draw();}frame=requestAnimationFrame(tick);}
+function tick(time){if(!playing)return;if(time-last>40){last=time;let v=Number($('reveal').value);if(v>=n){stop();return;}$('reveal').value=Math.min(n,v+Math.max(1,Math.ceil(n/180)));draw();}frame=requestAnimationFrame(tick);}
 $('play').onclick=()=>{if(playing)return stop();if(Number($('reveal').value)>=n)$('reveal').value=0;playing=true;$('play').textContent='Pause';frame=requestAnimationFrame(tick);};
-$('reset').onclick=()=>{$('compression').value=d===6?1:16;updateProjection(true);};
+$('reset').onclick=()=>{zoom=1;$('compression').value=defaultCompression();updateProjection(true);};
+$('color-mode').onchange=()=>{updateLegend();draw();};
+canvas.addEventListener('wheel',event=>{event.preventDefault();zoom=Math.max(.7,Math.min(6,zoom*Math.exp(-event.deltaY*.001)));draw();},{passive:false});
 $('compression').oninput=()=>updateProjection();
 $('uncompressed').onclick=()=>{$('compression').value=1;updateProjection();};
 $('dimension').onchange=refresh;$('steps').oninput=refresh;
@@ -73,6 +84,9 @@ canvas.onpointerup=canvas.onpointercancel=()=>{drag=null;};
 canvas.onkeydown=e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();yaw+=e.key==='ArrowLeft'?-.1:e.key==='ArrowRight'?.1:0;pitch+=e.key==='ArrowUp'?.1:e.key==='ArrowDown'?-.1:0;draw();};
 new ResizeObserver(draw).observe(canvas);
 const editor=$('python-code'), highlight=$('code-highlight'), originalCode=editor.value;
+const examples={six:originalCode,return:$('return-example').content.textContent.trim(),
+  check:originalCode.slice(0,originalCode.indexOf('\nfor point'))+'\n\n'+$('check-example').content.textContent.trim()};
+const drafts={...examples};let currentExample='six';
 editor.wrap='off';
 function highlightCode(){
   const code=highlight.querySelector('code');
@@ -85,17 +99,17 @@ function highlightCode(){
   syncScroll();
 }
 function syncScroll(){highlight.scrollTop=editor.scrollTop;highlight.scrollLeft=editor.scrollLeft;}
-editor.oninput=()=>{highlightCode();if(!worker)$('run-status').textContent='Edited · run to update output';};
+editor.oninput=()=>{drafts[currentExample]=editor.value;highlightCode();if(!worker)$('run-status').textContent='Edited';};
 editor.onscroll=syncScroll;
 let worker=null,timer=null;
 function finish(status){
   clearTimeout(timer);worker?.terminate();worker=null;
-  $('run-python').disabled=false;$('stop-python').disabled=true;$('reset-code').disabled=false;editor.readOnly=false;
+  $('run-python').disabled=false;$('stop-python').disabled=true;$('reset-code').disabled=false;$('example').disabled=false;editor.readOnly=false;
   $('run-status').textContent=status;
 }
 $('run-python').onclick=()=>{
   if(worker)return;
-  $('run-python').disabled=true;$('stop-python').disabled=false;$('reset-code').disabled=true;editor.readOnly=true;
+  $('run-python').disabled=true;$('stop-python').disabled=false;$('reset-code').disabled=true;$('example').disabled=true;editor.readOnly=true;
   $('run-status').textContent='Running…';
   $('python-output').textContent='Loading Python (first run may take a minute)…\n';
   try{
@@ -114,7 +128,13 @@ $('run-python').onclick=()=>{
   }catch(error){$('python-output').textContent+=`\n${error}`;finish('Failed');}
 };
 $('stop-python').onclick=()=>{$('python-output').textContent+='\nStopped. Rerun to restart this small computation.';finish('Stopped');};
-$('reset-code').onclick=()=>{editor.value=originalCode;editor.scrollTop=editor.scrollLeft=0;highlightCode();$('python-output').textContent='Run the example to see its output here.';$('run-status').textContent='Ready';};
+function showExample(){
+  editor.value=drafts[currentExample];editor.scrollTop=editor.scrollLeft=0;highlightCode();
+  $('python-output').textContent=currentExample==='check'?'Run the 128-step exact check.':'Run to see the first 13 vertices.';
+  $('source-name').textContent=currentExample==='check'?'check_walk.py':'basis_walk.py';$('run-status').textContent='Ready';
+}
+$('example').onchange=()=>{drafts[currentExample]=editor.value;currentExample=$('example').value;showExample();};
+$('reset-code').onclick=()=>{drafts[currentExample]=examples[currentExample];showExample();};
 function fullscreenCode(active){
   $('workbench').classList.toggle('is-fullscreen',active);document.body.classList.toggle('code-fullscreen',active);
   $('fullscreen-code').textContent=active?'Exit full screen':'Full screen';$('fullscreen-code').setAttribute('aria-pressed',String(active));

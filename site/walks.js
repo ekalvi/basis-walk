@@ -51,12 +51,12 @@ export function check(d,n) {
   return {status:'finite-prefix-pass', dimension:d, steps:n, vertices:n+1, forbidden:bounds[d], pairs};
 }
 // 4D/5D: the paper's return-displacement map. 6D: an illustrative
-// real-linear map, NOT an integer projection certified for the infinite walk.
+// linear map with Z equal to the step index, NOT a certified 3D construction.
 export function projectionColumns(d) {
   if (!(d in bounds)) throw Error('Invalid dimension');
   if (d === 3) return [[1,0,0],[0,1,0],[0,0,1]];
   if (d < 6) return [[1,0,1],[-1,1,2],[0,-1,3],[-2,0,4],[0,0,0]].slice(0,d);
-  return [[1,0,0.7],[-0.5,0.866,-0.7],[-0.5,-0.866,0.3],[0.866,0.5,-0.3],[-0.866,0.5,-1],[0,-1,1]];
+  return [[1,0,1],[0,1,1],[-1,0,1],[0,-1,1],[1,1,1],[-1,-1,1]];
 }
 export function shadow(p) {
   const columns = projectionColumns(p.length);
