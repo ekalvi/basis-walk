@@ -9,5 +9,5 @@ self.onmessage = async ({data}) => {
     python.FS.writeFile('walks.py',await response.text());
     await python.runPythonAsync(data.code);
     postMessage({text:'Finished. Finite checks are not infinite proofs.',done:true});
-  } catch(error) { postMessage({text:String(error),done:true}); }
+  } catch(error) { postMessage({text:String(error),done:true,error:true}); }
 };

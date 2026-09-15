@@ -32,6 +32,15 @@ The manuscript's 6D auxiliary space is C² × R (five real coordinates),
 not literally R³. Our rendered 6D→3D map is only illustrative. It must not inherit
 the theorem for the separately constructed finite-step 3D walk.
 
+The explorer lists the exact columns used by its linear display map, sourced
+from the same JavaScript function as the renderer. An optional longitudinal
+compression shortens only the component parallel to the projected prefix's
+endpoint displacement; it does not subtract the walk's trend vertex by vertex.
+The factor stays positive (1–40), so this extra 3D transformation is invertible,
+but changes lengths and angles. It is fixed for the whole selected prefix,
+independent of reveal position. Original integer vertices and checking routines
+are unchanged. The subsequent rotation and 2D screen projection are illustrative.
+
 ## Proof status and checks
 
 - The snapshot includes written infinite proofs for 3D, 4D, 6D; this repo does not

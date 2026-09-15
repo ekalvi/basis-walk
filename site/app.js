@@ -1,20 +1,35 @@
-import {letters,vertices,shadow,colors,check} from './walks.js';
+import {letters,vertices,shadow,colors,projectionColumns,compressForward,viewAngles} from './walks.js';
 const $ = id => document.getElementById(id);
 const canvas = $('walk'), ctx = canvas.getContext('2d');
-let d=6,n=128,points=[],projected=[],word=[],yaw=-.55,pitch=.6,playing=false,frame=0,drag=null;
+let d=6,n=256,points=[],projected=[],word=[],yaw=-.55,pitch=.6,playing=false,frame=0,drag=null;
 function refresh() {
-  stop(); d=Number($('dimension').value); n=Number($('steps').value);
-  points=vertices(d,n); projected=points.map(shadow); word=letters(d,n);
+  stop(); const nextD=Number($('dimension').value);
+  if(nextD!==d)$('compression').value=nextD===6?1:16;
+  d=nextD; n=Number($('steps').value);
+  points=vertices(d,n); word=letters(d,n);
   $('step-count').value=n; $('reveal').max=n; $('reveal').value=n;
-  $('check-output').textContent='Not checked yet for this prefix.';
-  $('view-label').textContent=d===3?'3D · original coordinates':d===5?'5D · embedded 4D construction':`${d}D → 3D · linear view`;
-  $('projection').textContent=d===3?'Native 3D coordinates. Rotation changes only the view.':d===6?
-    'Illustrative 6D → 3D linear projection, not a certified infinite 3D construction. Apparent alignments are not evidence of collinearity in 6D.':
-    `The paper’s return-displacement map: e₀ ↦ (1,0,1), e₁ ↦ (−1,1,2), e₂ ↦ (0,−1,3), e₃ ↦ (−2,0,4).${d===5?' The fifth coordinate stays zero.':''}`;
+  $('projection').textContent=d===3?'3D coordinates → optional forward compression → rotation → 2D screen. The readout below the canvas is unmodified.':d===6?
+    '6D lattice → illustrative 3D linear map → optional forward compression → rotation → 2D screen. This is not a certified 3D avoidance construction.':
+    `${d}D lattice → manuscript’s 3D return-displacement map → optional forward compression → rotation → 2D screen.${d===5?' The fifth coordinate is always zero; its display vector is also zero.':''}`;
+  $('map-caption').textContent=d===3?'3D: identity map before compression':d===6?'6D: chosen illustrative vectors, not the manuscript’s auxiliary space':`${d}D: return-displacement vectors${d===5?' with a zero fifth column':''}`;
+  $('map-columns').replaceChildren(...projectionColumns(d).map((v,j)=>{
+    const row=document.createElement('tr'), label=document.createElement('th');
+    label.scope='row';label.textContent=`e${'₀₁₂₃₄₅'[j]}${d===5&&j===4?' (unused)':''}`;row.append(label);
+    for(const value of v){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}
+    return row;
+  }));
   $('legend').replaceChildren(...Array.from({length:d},(_,j)=>{
     const el=document.createElement('span'), swatch=document.createElement('i');
     swatch.style.setProperty('--color',colors[j]); el.append(swatch,`e${'₀₁₂₃₄₅'[j]}${d===5&&j===4?' · unused':''}`); return el;
-  })); draw();
+  })); updateProjection(true);
+}
+function updateProjection(reframe=false){
+  const factor=Number($('compression').value);
+  projected=compressForward(points.map(shadow),factor);
+  if(reframe)({yaw,pitch}=viewAngles(projected));
+  $('compression-value').value=factor===1?'1 (off)':`1/${factor}`;
+  $('view-label').textContent=`${d===3?'3D':`${d}D → 3D`} · ${factor===1?'uncompressed':`forward scale 1/${factor}`} · illustrative view`;
+  draw();
 }
 function draw() {
   const width=canvas.clientWidth,height=canvas.clientHeight,ratio=window.devicePixelRatio||1;
@@ -46,7 +61,9 @@ function stop(){playing=false;cancelAnimationFrame(frame);$('play').textContent=
 let last=0;
 function tick(time){if(!playing)return;if(time-last>40){last=time;let v=Number($('reveal').value);if(v>=n){stop();return;}$('reveal').value=v+1;draw();}frame=requestAnimationFrame(tick);}
 $('play').onclick=()=>{if(playing)return stop();if(Number($('reveal').value)>=n)$('reveal').value=0;playing=true;$('play').textContent='Pause';frame=requestAnimationFrame(tick);};
-$('reset').onclick=()=>{yaw=-.55;pitch=.6;draw();};
+$('reset').onclick=()=>{$('compression').value=d===6?1:16;updateProjection(true);};
+$('compression').oninput=()=>updateProjection();
+$('uncompressed').onclick=()=>{$('compression').value=1;updateProjection();};
 $('dimension').onchange=refresh;$('steps').oninput=refresh;
 $('reveal').oninput=()=>{stop();draw();};
 document.querySelectorAll('[data-d]').forEach(el=>el.onclick=()=>{$('dimension').value=el.dataset.d;refresh();});
@@ -55,21 +72,56 @@ canvas.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.008;pitch=Mat
 canvas.onpointerup=canvas.onpointercancel=()=>{drag=null;};
 canvas.onkeydown=e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();yaw+=e.key==='ArrowLeft'?-.1:e.key==='ArrowRight'?.1:0;pitch+=e.key==='ArrowUp'?.1:e.key==='ArrowDown'?-.1:0;draw();};
 new ResizeObserver(draw).observe(canvas);
-$('check').onclick=()=>{const result=check(d,n);$('check-output').textContent=result.status==='finite-prefix-pass'?
-  `PASS · ${n+1} vertices · ${result.pairs.toLocaleString()} exact pairs · no ${result.forbidden} collinear in this prefix. Not an infinite proof.`:JSON.stringify(result);};
+const editor=$('python-code'), highlight=$('code-highlight'), originalCode=editor.value;
+editor.wrap='off';
+function highlightCode(){
+  const code=highlight.querySelector('code');
+  const tokens=editor.value.match(/#[^\n]*|"(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|\b(?:from|import|for|in|if|else|elif|def|return|class|while|try|except|with|as|True|False|None|and|or|not|print)\b|\b\d+(?:\.\d+)?\b|[^#"'\w]+|\w+|./g)||[];
+  code.replaceChildren(...tokens.map(text=>{
+    let kind=text.startsWith('#')?'comment':/^["']/.test(text)?'string':/^\d/.test(text)?'number':/^(from|import|for|in|if|else|elif|def|return|class|while|try|except|with|as|True|False|None|and|or|not|print)$/.test(text)?'keyword':null;
+    if(!kind)return document.createTextNode(text);
+    const span=document.createElement('span');span.className=`tok-${kind}`;span.textContent=text;return span;
+  }),document.createTextNode('\n'));
+  syncScroll();
+}
+function syncScroll(){highlight.scrollTop=editor.scrollTop;highlight.scrollLeft=editor.scrollLeft;}
+editor.oninput=()=>{highlightCode();if(!worker)$('run-status').textContent='Edited · run to update output';};
+editor.onscroll=syncScroll;
 let worker=null,timer=null;
-function finish(){clearTimeout(timer);worker?.terminate();worker=null;$('run-python').disabled=false;$('stop-python').disabled=true;}
+function finish(status){
+  clearTimeout(timer);worker?.terminate();worker=null;
+  $('run-python').disabled=false;$('stop-python').disabled=true;$('reset-code').disabled=false;editor.readOnly=false;
+  $('run-status').textContent=status;
+}
 $('run-python').onclick=()=>{
-  $('run-python').disabled=true;$('stop-python').disabled=false;
+  if(worker)return;
+  $('run-python').disabled=true;$('stop-python').disabled=false;$('reset-code').disabled=true;editor.readOnly=true;
+  $('run-status').textContent='Running…';
   $('python-output').textContent='Loading Python (first run may take a minute)…\n';
-  worker=new Worker('python-worker.js');
-  worker.onmessage=({data})=>{
-    if(data.text)$('python-output').textContent=($('python-output').textContent+data.text+'\n').slice(-20000);
-    if(data.done)finish();
-  };
-  worker.onerror=e=>{$('python-output').textContent+=`\nWorker error: ${e.message}`;finish();};
-  worker.postMessage({code:$('python-code').value});
-  timer=setTimeout(()=>{$('python-output').textContent+='\nStopped at the 120-second limit. Rerun to restart.';finish();},120000);
+  try{
+    let hasOutput=false;
+    worker=new Worker('python-worker.js');
+    worker.onmessage=({data})=>{
+      if(data.text){
+        if(!hasOutput){$('python-output').textContent='';hasOutput=true;}
+        $('python-output').textContent=($('python-output').textContent+data.text+'\n').slice(-20000);
+      }
+      if(data.done)finish(data.error?'Failed':'Finished');
+    };
+    worker.onerror=e=>{$('python-output').textContent+=`\nWorker error: ${e.message}`;finish('Failed');};
+    worker.postMessage({code:editor.value});
+    timer=setTimeout(()=>{$('python-output').textContent+='\nStopped at the 120-second limit. Rerun to restart.';finish('Timed out');},120000);
+  }catch(error){$('python-output').textContent+=`\n${error}`;finish('Failed');}
 };
-$('stop-python').onclick=()=>{$('python-output').textContent+='\nStopped. Rerun to restart this small computation.';finish();};
-refresh();
+$('stop-python').onclick=()=>{$('python-output').textContent+='\nStopped. Rerun to restart this small computation.';finish('Stopped');};
+$('reset-code').onclick=()=>{editor.value=originalCode;editor.scrollTop=editor.scrollLeft=0;highlightCode();$('python-output').textContent='Run the example to see its output here.';$('run-status').textContent='Ready';};
+function fullscreenCode(active){
+  $('workbench').classList.toggle('is-fullscreen',active);document.body.classList.toggle('code-fullscreen',active);
+  $('fullscreen-code').textContent=active?'Exit full screen':'Full screen';$('fullscreen-code').setAttribute('aria-pressed',String(active));
+}
+$('fullscreen-code').onclick=()=>fullscreenCode(!$('workbench').classList.contains('is-fullscreen'));
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape'&&$('workbench').classList.contains('is-fullscreen')){fullscreenCode(false);$('fullscreen-code').focus();}
+  if(event.target===editor&&event.key==='Enter'&&(event.ctrlKey||event.metaKey)){event.preventDefault();$('run-python').click();}
+});
+highlightCode();refresh();
