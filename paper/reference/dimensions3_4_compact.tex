@@ -1,0 +1,155 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,microtype,booktabs}
+\usepackage[margin=1in]{geometry}
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{lemma}{Lemma}
+\newtheorem*{remark}{Remark}
+\newcommand{\N}{\mathbb N}
+\newcommand{\vthree}{\nu_3}
+\begin{document}
+\begin{center}
+{\Large\bfseries One $3$-adic construction for dimensions three and four}
+\end{center}
+
+Write $n=\sum_{j\ge0}d_j3^j$ in base $3$ and set
+\[
+ a_n=(-1)^{d_1+d_3+\cdots},\qquad
+ b_n=(-1)^{d_0+d_2+\cdots},\qquad
+ R_n=(X_n,Y_n,n),
+\]
+where $X_n=\sum_{j<n}a_j$ and $Y_n=\sum_{j<n}b_j$.  Appending a ternary
+digit gives, for $r=0,1,2$,
+\begin{equation}\label{eq:rec}
+ a_{3n+r}=b_n,\qquad b_{3n+r}=(-1)^r a_n,
+\end{equation}
+and therefore
+\begin{equation}\label{eq:sums}
+ X_{3n+r}=3Y_n+r b_n,\qquad
+ Y_{3n+r}=X_n+\varepsilon_r a_n,
+ \quad(\varepsilon_0,\varepsilon_1,\varepsilon_2)=(0,1,0).
+\end{equation}
+
+\begin{lemma}\label{lem:core}
+Let $E=\{n\ge0:(a_n,b_n)=(1,1)\}$.  No four points $R_n$ with $n\in E$
+are collinear.
+\end{lemma}
+\begin{proof}
+First suppose $m<n$ have the same state $(a_m,b_m)=(a_n,b_n)$.  Then
+\begin{equation}\label{eq:val}
+ \vthree\!\left((X_n-X_m)^2-3(Y_n-Y_m)^2\right)=\vthree(n-m),
+\end{equation}
+and the expression on the left is nonzero.  To see this, write
+$m=3u+r$, $n=3v+s$.  If $r\ne s$, \eqref{eq:rec} gives $b_u=b_v$, so
+\[
+ X_n-X_m\equiv(s-r)b_u\not\equiv0\pmod3
+\]
+by \eqref{eq:sums}; both valuations in \eqref{eq:val} are therefore zero.
+If $r=s$, the parent states agree and
+\[
+ X_n-X_m=3(Y_v-Y_u),\qquad Y_n-Y_m=X_v-X_u.
+\]
+Thus the quadratic expression is $-3$ times its parent value and
+$n-m=3(v-u)$.  Iteration proves \eqref{eq:val}.
+
+Now suppose $R_{n_0},\ldots,R_{n_3}$, with $n_0<\cdots<n_3$ in $E$, lie
+on one line.  There are rational slopes $\alpha,\beta$ such that every
+chord has the form
+\[
+ (X_{n_j}-X_{n_i},Y_{n_j}-Y_{n_i})
+   =(n_j-n_i)(\alpha,\beta).
+\]
+Putting $c=\alpha^2-3\beta^2$, equation \eqref{eq:val} gives
+\[
+ \vthree(n_j-n_i)=\vthree(c)+2\vthree(n_j-n_i)
+\]
+for every $i<j$; in particular $c\ne0$.  Hence all six differences have
+one common valuation $e= -\vthree(c)$.  After division by $3^e$, the four integers
+$n_i-n_0$ would be pairwise distinct modulo $3$, impossible.
+\end{proof}
+
+Enumerate $E$ as $0=N_0<N_1<\cdots$.  If $n=9q+3u+v$, with $u,v\in\{0,1,2\}$, then by~\eqref{eq:rec} (applied twice)
+\[
+ (a_n,b_n)=((-1)^ua_q,(-1)^vb_q).
+\]
+The residues modulo $9$ giving state $(1,1)$ given $(a_q,b_q)$ are respectively
+\[
+\begin{array}{c|cccc}
+(a_q,b_q)&(1,1)&(1,-1)&(-1,1)&(-1,-1)\\ \hline
+n-9q&0,2,6,8&1,7&3,5&4
+\end{array}.
+\]
+Notice that $\left(\{(1,1),(1,-1),(-1,1),(-1,-1)\}, \cdot \right)$, where $\cdot$ is the entrywise multiplication forms the Klein-four group, i.e., every element is its inverse and so the table can also be read reversely; starting from $(a_0,b_0)=(1,1)$ one obtains the latter $(a_{n-9q},b_{n-9q})$.
+
+When $q$ is increased by one, a ternary carry changes the parity of exactly
+one of the two alternating digit sums (notice that $n=\sum_{j\ge0}d_j3^j  \equiv \sum_{j\ge0} \pmod 2$).
+Noticing that the corresponding residue $n-9q$ changes parity as well, reading consecutive entries in the
+above table therefore shows that
+$N_{k+1}-N_k\in\{2,4,6,8\}.$
+
+In each of the cases, the sum of the $(a_j,b_j)$ depends solely on the difference and one can check the following table,
+\begin{equation}\label{eq:return}
+\begin{array}{c|cccc}
+r=(N_{k+1}-N_k)/2&1&2&3&4\\ \hline
+\frac12(R_{N_{k+1}}-R_{N_k})=d_r
+ &(1,0,1)&(-1,1,2)&(0,-1,3)&(-2,0,4)
+\end{array}.
+\end{equation}
+
+For the latter careful check (there are $13$ cases to consider), one sums the corresponding $(a_q,b_q),$ multiplied with the base state (to correspond with $(1,1)$).
+For example, if one has $N_i \equiv 5 \pmod 9$ and $N_{i+1} \equiv 4 \pmod 9$,
+we have 
+\begin{align*}
+&(-1,1)\cdot \left( (-1,1)+(1,1)+(1,-1)+(1,1) \right)+ (-1,-1)\cdot \left((1,1)+(1,-1)+(1,1)+(-1,1) \right)\\=&(-1,1)\cdot(2,2)+(-1,-1)\cdot(2,2)=(-4,0),\end{align*}
+the latter being two times $(-2,0)$.
+
+
+\begin{theorem}[Dimension $4$]
+There is an infinite standard-basis walk in $\N^4$ with no four collinear
+vertices.
+\end{theorem}
+\begin{proof}
+At the $k$th step use $e_r$, where $r=(N_{k+1}-N_k)/2$.  The linear map
+sending $e_r$ to $d_r$ sends the $k$th walk vertex to $R_{N_k}/2$.
+Thus four collinear walk vertices would have four collinear images; the
+images are distinct because their third coordinates are the distinct
+numbers $N_k/2$.  Lemma~\ref{lem:core} gives the contradiction.
+\end{proof}
+
+\begin{theorem}[Dimension $3$]\label{thm:d3}
+There is an infinite standard-basis walk in $\N^3$ with at most six
+vertices on every affine line.
+\end{theorem}
+\begin{proof}
+The vectors $d_1,d_2,d_3$ in \eqref{eq:return} are independent
+(determinant $6$), and $d_1+d_4=d_2+d_3$.  Hence an invertible linear map
+may send
+\[
+ d_1\mapsto e_0,\qquad d_2\mapsto e_1,\qquad
+ d_3\mapsto e_0+e_2,
+\]
+and then necessarily $d_4\mapsto e_1+e_2$.  The images
+$S_k$ of $R_{N_k}/2$ therefore form a walk with these four macro-steps,
+and Lemma~\ref{lem:core} says that no four $S_k$ are collinear.
+
+Subdivide $e_0+e_2$ as $e_2,e_0$ and $e_1+e_2$ as $e_2,e_1$.  Every
+vertex of the resulting unit-step walk lies in
+\[
+ \mathcal S\cup(\mathcal S+e_2),\qquad \mathcal S=\{S_k:k\ge0\}.
+\]
+Each line meets either translate in at most three points, hence contains
+at most six vertices altogether.
+\end{proof}
+
+\begin{remark}
+The bound six is attained by this construction.  Its vertices at times
+$64,70,82,88,100,106$ are
+\[
+(38,13,13),(41,15,14),(47,19,16),(50,21,17),(56,25,19),(59,27,20),
+\]
+and lie on a line of primitive direction $(3,2,1)$.  Thus Theorem~\ref{thm:d3}
+cannot be strengthened to ``at most five'' by merely sharpening its last
+estimate.
+\end{remark}
+
+\end{document}

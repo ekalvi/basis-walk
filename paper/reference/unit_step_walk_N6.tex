@@ -1,0 +1,240 @@
+\documentclass[10pt,reqno]{amsart}
+
+\usepackage[margin=.8in]{geometry}
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage{booktabs}
+\usepackage{microtype}
+\usepackage{tikz}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+\newcommand{\vTwo}{\nu_2}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}[theorem]{Lemma}
+
+\newcommand{\N}{\mathbb N}
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\vTwo}{\nu_2}
+
+\title{A six-dimensional unit-step walk with no collinear triple}
+\date{}
+
+\begin{document}
+
+\begin{abstract}
+We construct an infinite standard-basis walk in $\N^6$ with no three
+collinear vertices.  The proof uses a four-state walk in the Gaussian
+integers, two elementary state markers, and a short $2$-adic argument.
+\end{abstract}
+
+\maketitle
+
+\section{The construction}
+
+We use $\N=\{0,1,2,\ldots\}$.  Gerver and Ramsey asked whether there is an
+infinite sequence of distinct lattice points, with bounded consecutive
+distances, no three of which are collinear~\cite{GR}.  The following gives a
+direct unit-step construction in six dimensions.
+
+\begin{theorem}\label{thm:main}
+There is an infinite sequence $P_0,P_1,\ldots\in\N^6$ such that $P_0=0$,
+every difference $P_{n+1}-P_n$ is a standard basis vector, and no three
+vertices are collinear.
+\end{theorem}
+
+We begin with a four-state Gaussian walk, adapted from the construction in
+\cite{CK}.  Define $\sigma_n\in\{0,1,2,3\}$ recursively by $\sigma_0=0$ and,
+modulo $4$,
+\begin{equation}\label{eq:states}
+ \sigma_{2n}\equiv-\sigma_n,
+ \qquad
+ \sigma_{2n+1}\equiv1-\sigma_n.
+\end{equation}
+Set
+\begin{equation}\label{eq:gaussian}
+ u_n=i^{\sigma_n},
+ \qquad
+ z_n=\sum_{0\le r<n}u_r\in\Z[i].
+\end{equation}
+Thus $(z_n)$ is a nearest-neighbor walk in the Gaussian lattice.  For
+$\varepsilon\in\{0,1\}$, equation~\eqref{eq:states} gives
+\begin{equation}\label{eq:dyadic}
+ u_{2n+\varepsilon}=i^\varepsilon\overline{u_n},
+ \qquad
+ z_{2n+\varepsilon}
+   =(1+i)\overline{z_n}+\varepsilon\overline{u_n}.
+\end{equation}
+Indeed, the second identity follows by pairing
+$u_{2r}+u_{2r+1}=(1+i)\overline{u_r}$.
+
+For a nonzero rational number $x$, write $\vTwo(x)$ for its $2$-adic
+valuation.
+
+\begin{lemma}[Same-state chords]\label{lem:chords}
+If $m<n$ and $\sigma_m=\sigma_n$, then $z_m\ne z_n$ and
+\begin{equation}\label{eq:chord-valuation}
+ \vTwo\bigl(|z_n-z_m|^2\bigr)=\vTwo(n-m).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Suppose first that $n-m$ is even.  Then $m=2a+\varepsilon$ and
+$n=2b+\varepsilon$ for some $\varepsilon\in\{0,1\}$.  The equality of the
+endpoint states and~\eqref{eq:states} imply $\sigma_a=\sigma_b$, and hence
+$u_a=u_b$.  The correction terms in~\eqref{eq:dyadic} therefore cancel, so
+\begin{equation}\label{eq:halving}
+ z_n-z_m=(1+i)\overline{z_b-z_a}.
+\end{equation}
+Thus halving an even gap preserves equality of the endpoint states and divides
+the squared norm of the chord by $2$.
+
+Repeat this reduction $\vTwo(n-m)$ times.  The final gap is odd, so its chord
+is a sum of an odd number of Gaussian units.  If that sum is $x+iy$, then each
+Gaussian unit has coordinate sum $1$ modulo $2$.  Hence $x+y$ is odd, and
+$x^2+y^2$ is odd.  Reversing the reductions proves
+\eqref{eq:chord-valuation}; it also shows that the original chord is nonzero.
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+Let $\delta_n\in\{0,1,2,3\}$ represent
+$\sigma_{n+1}-\sigma_n\pmod4$.  From~\eqref{eq:states},
+\begin{equation}\label{eq:increments}
+ \delta_{2n}=1,
+ \qquad
+ \delta_{2n+1}\equiv-1-\delta_n\pmod4.
+\end{equation}
+Since $\delta_0=1$, induction gives $\delta_n\in\{1,2\}$ for every $n$.
+Consequently, the only possible state transitions are
+\begin{equation}\label{eq:transitions}
+ 01,\ 12,\ 23,\ 30,\ 02,\ 13,\ 20,\ 31.
+\end{equation}
+
+We now attach two markers to the four states.  Put
+\begin{equation}\label{eq:markers}
+ (d_0,d_1,d_2,d_3)=(0,1,i,1+i),
+ \qquad
+ (c_0,c_1,c_2,c_3)=(0,0,0,1-i),
+\end{equation}
+and define
+\begin{equation}\label{eq:shadow}
+ R_n=\bigl(d_{\sigma_n},\ z_n+c_{\sigma_n},\ n\bigr)
+ \in\Z[i]^2\times\Z\cong\Z^5.
+\end{equation}
+If the state changes from $r$ to $s$, then
+\begin{equation}\label{eq:shadow-step}
+ R_{n+1}-R_n
+ =\bigl(d_s-d_r,\ i^r+c_s-c_r,\ 1\bigr).
+\end{equation}
+The eight transitions in~\eqref{eq:transitions} produce only the six vectors
+shown in Figure~\ref{fig:steps}.
+
+\begin{figure}[htb]
+\centering
+\begin{minipage}[c]{.29\linewidth}
+\centering
+\begin{tikzpicture}[x=1.25cm,y=1.05cm,every node/.style={font=\small}]
+  \draw[gray!70,line width=.6pt] (0,0) rectangle (1,1);
+  \fill (0,0) circle (1.5pt) node[below left] {$d_0=0$};
+  \fill (1,0) circle (1.5pt) node[below right] {$d_1=1$};
+  \fill (0,1) circle (1.5pt) node[above left] {$d_2=i$};
+  \fill (1,1) circle (1.5pt) node[above right] {$d_3=1+i$};
+\end{tikzpicture}
+\end{minipage}\hfill
+\begin{minipage}[c]{.67\linewidth}
+\centering
+\begin{tabular}{c@{\qquad}c}
+\toprule
+transition(s) & $R_{n+1}-R_n$ \\
+\midrule
+$01$       & $(1,\ 1,\ 1)$ \\
+$12$       & $(-1+i,\ i,\ 1)$ \\
+$23$       & $(1,\ -i,\ 1)$ \\
+$30$       & $(-1-i,\ -1,\ 1)$ \\
+$02,13$    & $(i,\ 1,\ 1)$ \\
+$20,31$    & $(-i,\ -1,\ 1)$ \\
+\bottomrule
+\end{tabular}
+\end{minipage}
+\caption{The square state marker and the six possible shadow steps.  The first
+two coordinates in the table are complex.}
+\label{fig:steps}
+\end{figure}
+
+We claim that no three points $R_n$ are collinear.  Suppose otherwise, and
+choose $a<b<c$ such that $R_a,R_b,R_c$ are collinear.  Write
+$p=b-a$ and $q=c-b$.  Since the last coordinate of $R_n$ is $n$, the affine
+parameter is fixed:
+\begin{equation}\label{eq:slopes}
+ \frac{R_b-R_a}{p}
+ =\frac{R_c-R_b}{q}
+ =\frac{R_c-R_a}{p+q}.
+\end{equation}
+In the first complex coordinate this says
+\begin{equation}\label{eq:convexity}
+ d_{\sigma_b}
+ =\frac{q}{p+q}d_{\sigma_a}
+  +\frac{p}{p+q}d_{\sigma_c}.
+\end{equation}
+The four numbers $d_0,d_1,d_2,d_3$ are the vertices of a square.  As each is
+an extreme point of their convex hull, the strict convex combination in
+\eqref{eq:convexity} forces
+\begin{equation}\label{eq:equal-states}
+ \sigma_a=\sigma_b=\sigma_c.
+\end{equation}
+
+The correction terms $c_{\sigma_n}$ now cancel from the second complex
+coordinate of every chord in~\eqref{eq:slopes}.  Hence
+\begin{equation}\label{eq:gaussian-slopes}
+ \frac{z_b-z_a}{p}
+ =\frac{z_c-z_b}{q}
+ =\frac{z_c-z_a}{p+q}.
+\end{equation}
+By Lemma~\ref{lem:chords}, for example,
+\[
+ \vTwo\!\left(\left|\frac{z_b-z_a}{p}\right|^2\right)
+ =\vTwo\bigl(|z_b-z_a|^2\bigr)-2\vTwo(p)=-\vTwo(p).
+\]
+Thus the three nonzero fractions in~\eqref{eq:gaussian-slopes} have
+squared-modulus valuations
+\begin{equation}\label{eq:slope-valuations}
+ -\vTwo(p),\qquad -\vTwo(q),\qquad -\vTwo(p+q),
+\end{equation}
+respectively.  Equality in~\eqref{eq:gaussian-slopes} would therefore give
+\(
+ \vTwo(p)=\vTwo(q)=\vTwo(p+q).
+\)
+This is impossible: if $p$ and $q$ have the same $2$-adic valuation, then
+$p+q$ has a larger one.  Thus the shadow $(R_n)$ has no collinear triple.
+
+Finally, list the six shadow steps in Figure~\ref{fig:steps} as
+$v_1,\ldots,v_6$.  Starting from $P_0=0$, replace every occurrence of $v_j$
+by the standard basis vector $e_j\in\N^6$.  The real-linear map
+\[
+ T:\mathbb R^6\longrightarrow\mathbb C^2\times\mathbb R,
+ \qquad T(e_j)=v_j,
+\]
+satisfies $T(P_n)=R_n$ for every $n$.  Moreover,
+$\sum_{j=1}^6(P_n)_j=n$, so the $P_n$ are distinct.  A collinear triple among
+the $P_n$ would map to three distinct collinear points among the $R_n$, which
+we have just proved impossible.  This completes the construction.
+\end{proof}
+
+\paragraph{Acknowledgment.}
+The Gaussian $2$-adic mechanism is adapted from~\cite{CK}.  The two-marker
+compression and drafts of this streamlined proof were developed with AI
+assistance.  No finite computation is used as a premise.
+
+\begin{thebibliography}{9}
+
+\bibitem{CK}
+S.~Cambie and E.~Kalviainen,
+\emph{An infinite small-step $\Z^3$-walk with no collinear triple},
+arXiv:2609.01766, 2026.
+
+\bibitem{GR}
+J.~L. Gerver and L.~T. Ramsey,
+\emph{On certain sequences of lattice points},
+Pacific J. Math. \textbf{83} (1979), 357--363.
+
+\end{thebibliography}
+
+\end{document}

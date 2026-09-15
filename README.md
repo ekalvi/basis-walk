@@ -84,5 +84,7 @@ paper is not yet available; the related Cambie–Kalviainen paper is linked
 separately in [Sources and attribution](docs/PROVENANCE.md).
 
 Author review of credit and mathematical wording, licensing decisions, and a
-repository-wide privacy review remain prerequisites for public release. No
+repository-wide privacy review remain prerequisites for public release. The
+[reference TeX sources](paper/reference/README.md) are tracked for private use;
+public release requires authors' permission or removal from Git history. No
 software or manuscript license has been selected yet.

@@ -4,8 +4,10 @@
 
 **Stijn Cambie, Erik Kalviainen, Jeffrey Shallit.**
 *Brown-Gerver-Ramsey Theorems in Small Dimensions.*
-Unpublished manuscript, September 2026. Manuscript sources are not distributed
-with this repository. A public link will be added when available and approved.
+Unpublished manuscript, September 2026. Reference TeX sources are tracked in
+[`paper/reference/`](../paper/reference/README.md) for private reproducibility,
+with file hashes and a publication-permission boundary. A public paper link will
+be added when available and approved.
 
 This is a manuscript snapshot, not proof of publication or collaborator approval
 of this software. Do not assign the original paper's arXiv ID to this joint paper.

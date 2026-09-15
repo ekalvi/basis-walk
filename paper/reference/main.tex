@@ -1,0 +1,774 @@
+\documentclass[12pt,reqno]{article}
+
+\usepackage[usenames]{color}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{amscd}
+\usepackage{graphicx}
+\usepackage{xcolor}
+\usepackage{float}
+\usepackage{booktabs}
+
+
+\usepackage[colorlinks=true,
+linkcolor=webgreen,
+filecolor=webbrown,
+citecolor=webgreen]{hyperref}
+
+\definecolor{webgreen}{rgb}{0,.5,0}
+\definecolor{webbrown}{rgb}{.6,0,0}
+
+
+\usepackage{fullpage}
+
+%\usepackage{psfig}
+\usepackage{graphics}
+\usepackage{latexsym}
+\usepackage{epsf}
+\usepackage{breakurl}
+
+\setlength{\textwidth}{6.5in}
+\setlength{\oddsidemargin}{.1in}
+\setlength{\evensidemargin}{.1in}
+\setlength{\topmargin}{-.1in}
+\setlength{\textheight}{8.4in}
+
+\newcommand{\seqnum}[1]{\href{https://oeis.org/#1}{\rm \underline{#1}}}
+
+\newcommand{\Z}{\mathbb Z}
+\newcommand{\N}{\mathbb N}
+\newcommand{\word}[1]{\mathtt{#1}}
+\newcommand{\vp}{\nu_3}
+
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\wt}{\mathbf{t}}
+\newcommand{\ws}{\mathbf{s}}
+\newcommand{\ww}{\mathbf{w}}
+
+\DeclareMathOperator{\Par}{\psi}
+
+\begin{document}
+
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}[theorem]{Corollary}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\author{S. Cambie, E. Kalviainen, J. Shallit}
+
+\title{Gerver-Ramsey Theorems in Small Dimensions}
+
+\maketitle
+
+\begin{abstract}
+
+\end{abstract}
+
+\section{Introduction}
+
+history of the problem
+
+restriction to unit vectors
+
+results so far (Lidbetter)
+
+summary of our results
+
+notational conventions:  Throughout, $\N=\{0,1,2,\ldots\}$, and word and vertex indices start
+at zero.
+
+connection to weak abelian powers:  Avoiding $k+1$ collinear vertices is equivalent to avoiding weak abelian
+$k$th powers: if $0\leq n_0<\cdots<n_k$ are collinear vertices, their
+consecutive displacements are positive multiples of a common vector;
+division by their coordinate sums gives the same normalized Parikh
+vector for all $k$ intervening nonempty blocks. Conversely, such $k$
+blocks give $k+1$ collinear boundary vertices.
+
+It's possible that in $\N^4$ there are infinite walks, with unit vector steps, with no three collinear points.  We have constructed a finite walk of length $2600$ with this property.
+
+It's possible that in $\N^3$ there are infinite walks, with unit vector steps, with no four collinear points.  We have constructed a finite walk of length $32768$ with this property.
+
+
+\section{Dimensions 6 and up}
+
+The new Cambie-Kalviainen result shows you can avoid three collinear points in dimension 3 with steps of 6 different vectors.  From this it easily follows that in dimension 6 one can avoid 3 collinear points using only the unit vectors in $\N^6$ as steps, using one unit vector to represent each of the 6 Cambie-Kalviainen  vectors.
+
+
+
+\section{Dimension 4}
+\label{dim4}
+
+For a finite word
+$v$ over $\Sigma=\{0,1,2,3\}$, let $|v|$ denote its length, let $|v|_j$
+denote the number of occurrences of the letter $j$, and define its Parikh
+vector by
+\[
+  \Par(v)=(|v|_0,|v|_1,|v|_2,|v|_3)^{\mathsf T}\in\Z_{\geq0}^{4}.
+\]
+A \emph{weak abelian cube} is a concatenation $xyz$ of three nonempty
+finite words such that
+\[
+  \frac{\Par(x)}{|x|}
+  =\frac{\Par(y)}{|y|}
+  =\frac{\Par(z)}{|z|}.
+\]
+The three block lengths need not be equal. A factor of an infinite word
+means a finite contiguous block.
+
+The construction below is a ternary adaptation of the valuation method
+used by Cambie and Kalviainen~\cite{CK} for a finite-step lattice walk
+with no three collinear vertices.
+
+\begin{theorem}\label{thm:main}
+Let $\mathcal A=\{A,B,C,D,E\}$. Define a substitution
+$\tau:\mathcal A^*\to\mathcal A^*$ and a letter-to-letter coding
+$h:\mathcal A^*\to\Sigma^*$ by
+\[
+\begin{array}{c|ccccc}
+a&A&B&C&D&E\\ \hline
+\tau(a)&AB&AACA&ADE&AACCE&ADCCA\\
+h(a)&0&1&2&3&3
+\end{array}
+\]
+and extend both maps to words by concatenation. Then
+\[
+  \ww=h\bigl(\tau^\infty(A)\bigr)
+\]
+is an infinite word over $\Sigma$ containing no weak abelian cube.
+\end{theorem}
+
+The limit $\tau^\infty(A)$ is well defined: $\tau(A)$ starts with $A$,
+so $\tau^k(A)$ is a prefix of $\tau^{k+1}(A)$, and all images have
+length at least $2$, so these prefix lengths tend to infinity. Since $h$
+maps every auxiliary letter to one letter, its image is also infinite.
+For reference, the word begins
+\[
+  \ww=\word{0100200101033010100200100200100223}\cdots.
+\]
+All four output letters occur: $A,B,C$ occur in $\tau^2(A)=ABAACA$,
+and $D,E$ occur in $\tau^3(A)$.
+
+We first identify the blocks encoded by the auxiliary letters. Define
+another substitution, this time on $\Sigma$, by
+\begin{equation}\label{eq:sigma}
+  \sigma(0)=\word{010},\qquad
+  \sigma(1)=\word{232},\qquad
+  \sigma(2)=\word{101},\qquad
+  \sigma(3)=\word{323},
+\end{equation}
+and put $\wt=\sigma^\infty(0)$. This fixed point exists because
+$\sigma(0)$ starts with $0$ and every image has length $3$.
+Define $R:\mathcal A^*\to\Sigma^*$ by the following nonempty images:
+\begin{equation}\label{eq:R}
+\begin{array}{c|ccccc}
+a&A&B&C&D&E\\ \hline
+R(a)&\word{01}&\word{0232}&\word{013231}&
+\word{02323231}&\word{01323232}.
+\end{array}
+\end{equation}
+
+\begin{lemma}\label{lem:returns}
+Writing $\ws=s_0s_1s_2\cdots=\tau^\infty(A)$, we have
+\[
+  R(\ws)=R(s_0)R(s_1)R(s_2)\cdots=\wt.
+\]
+Moreover, the starts of these blocks are exactly the positions at which
+$\wt$ has the letter $0$.
+\end{lemma}
+
+\begin{proof}
+The five required substitution identities are as follows. Spaces on the
+right separate the successive $R$-images.
+\begin{align*}
+\sigma(R(A))&=\word{01\ 0232}
+             =R(A)R(B),\\
+\sigma(R(B))&=\word{01\ 01\ 013231\ 01}
+             =R(A)R(A)R(C)R(A),\\
+\sigma(R(C))&=\word{01\ 02323231\ 01323232}
+             =R(A)R(D)R(E),\\
+\sigma(R(D))&=\word{01\ 01\ 013231\ 013231\ 01323232}
+             =R(A)R(A)R(C)R(C)R(E),\\
+\sigma(R(E))&=\word{01\ 02323231\ 013231\ 013231\ 01}
+             =R(A)R(D)R(C)R(C)R(A).
+\end{align*}
+Thus $\sigma\circ R=R\circ\tau$ on every letter, and hence on every
+finite word. Induction on $k$ gives
+\[
+  R(\tau^k(A))=\sigma^k(R(A))=\sigma^k(\word{01}).
+\]
+The word on the right starts with $\sigma^k(0)$, whose length is $3^k$.
+Consequently, for every fixed prefix length, these prefixes eventually
+agree with $\wt$. On the left, the nested words converge to $R(\ws)$.
+This proves $R(\ws)=\wt$.
+
+Each of the five words in~\eqref{eq:R} begins with $0$ and has no other
+occurrence of $0$. The concatenation is infinite and each block is
+nonempty. Its block starts are therefore precisely all the zero
+positions of $\wt$.
+\end{proof}
+
+We next associate a lattice walk with $\wt=t_0t_1t_2\cdots$. For each
+$n\in\N$, define $(a_n,b_n)$ from $t_n$ by
+\begin{equation}\label{eq:states}
+\begin{array}{c|rrrr}
+t_n&0&1&2&3\\ \hline
+a_n&1&1&-1&-1\\
+b_n&1&-1&1&-1
+\end{array}
+\end{equation}
+and define integer prefix sums and vertices by
+\begin{equation}\label{eq:vertices}
+  X_n=\sum_{j=0}^{n-1}a_j,\qquad
+  Y_n=\sum_{j=0}^{n-1}b_j,\qquad
+  P_n=(X_n,Y_n,n)\in\Z^3.
+\end{equation}
+An empty sum is zero, so $P_0=(0,0,0)$. Finally, put
+\[
+  F(U,V)=U^2-3V^2.
+\]
+For a nonzero integer $q$, $\nu_3(q)$ denotes the largest nonnegative
+integer $e$ such that $3^e$ divides $q$; the sign of $q$ is irrelevant.
+Extend this to nonzero rational numbers by
+$\nu_3(p/q)=\nu_3(p)-\nu_3(q)$. In particular,
+$\nu_3(uv)=\nu_3(u)+\nu_3(v)$ for nonzero rational $u,v$.
+
+\begin{lemma}\label{lem:recursion}
+For every $n\in\N$ and $r\in\{0,1,2\}$,
+\begin{align}
+  a_{3n+r}&=b_n,& b_{3n+r}&=(-1)^r a_n,\label{eq:state-recursion}\\
+  X_{3n+r}&=3Y_n+r b_n,&
+  Y_{3n+r}&=X_n+\varepsilon_r a_n,\label{eq:sum-recursion}
+\end{align}
+where $\varepsilon_0=0$, $\varepsilon_1=1$, and $\varepsilon_2=0$.
+\end{lemma}
+
+\begin{proof}
+For an input state $(a_n,b_n)$, the three output states in its
+$\sigma$-image, as read from~\eqref{eq:sigma} and~\eqref{eq:states}, are
+\[
+  (b_n,a_n),\qquad(b_n,-a_n),\qquad(b_n,a_n).
+\]
+This proves~\eqref{eq:state-recursion}. The sum of their first
+coordinates is $3b_n$, and the sum of their second coordinates is
+$a_n$. Thus $X_{3n}=3Y_n$ and $Y_{3n}=X_n$. Within the next block, the
+first $r$ first coordinates sum to $r b_n$, while the first $r$ second
+coordinates sum to $0,a_n,0$ for $r=0,1,2$, respectively. Adding these
+partial sums proves~\eqref{eq:sum-recursion}.
+\end{proof}
+
+\begin{lemma}[Equal-state valuation identity]\label{lem:valuation}
+If $0\leq m<n$ and $t_m=t_n$, then
+\[
+  F(X_n-X_m,Y_n-Y_m)\ne0
+\]
+and
+\begin{equation}\label{eq:valuation}
+  \nu_3\bigl(F(X_n-X_m,Y_n-Y_m)\bigr)=\nu_3(n-m).
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+Write $m=3u+r$ and $n=3v+s$, with $r,s\in\{0,1,2\}$. We separate
+the cases $r\ne s$ and $r=s$.
+
+Suppose first that $r\ne s$. The endpoint states agree, so
+$a_m=a_n$. Equation~\eqref{eq:state-recursion} implies
+\[
+  b_u=a_m=a_n=b_v.
+\]
+Consequently, by~\eqref{eq:sum-recursion},
+\[
+  X_n-X_m
+  =3(Y_v-Y_u)+s b_v-r b_u
+  \equiv(s-r)a_m\pmod3.
+\]
+Here $a_m\in\{-1,1\}$, and $s-r$ is not divisible by $3$.
+Therefore $X_n-X_m$ is not divisible by $3$, and
+\[
+  F(X_n-X_m,Y_n-Y_m)\equiv(X_n-X_m)^2\not\equiv0\pmod3.
+\]
+The quadratic expression is nonzero and has valuation zero. Also
+$3\nmid n-m$, so~\eqref{eq:valuation} holds in this case.
+
+Now suppose $r=s$. Equality of the first coordinates of the endpoint
+states gives $b_u=b_v$, and equality of the second coordinates gives
+$(-1)^r a_u=(-1)^r a_v$, hence $a_u=a_v$. The correspondence in
+\eqref{eq:states} is one-to-one, so $t_u=t_v$. In particular, the
+correction terms in~\eqref{eq:sum-recursion} cancel, giving
+\[
+  X_n-X_m=3(Y_v-Y_u),\qquad
+  Y_n-Y_m=X_v-X_u.
+\]
+It follows that
+\begin{align}
+ F(X_n-X_m,Y_n-Y_m)
+ &=9(Y_v-Y_u)^2-3(X_v-X_u)^2\notag\\
+ &=-3F(X_v-X_u,Y_v-Y_u).\label{eq:descent}
+\end{align}
+At the same time, $n-m=3(v-u)$, and $u<v$.
+
+Let $e=\nu_3(n-m)$. Apply this second case exactly $e$ times. At each
+step the endpoint states still agree, the indices remain distinct and
+ordered, and their difference is divided by $3$. We arrive at indices
+$m'<n'$ such that $t_{m'}=t_{n'}$ and $3\nmid n'-m'$, with
+\[
+  F(X_n-X_m,Y_n-Y_m)
+  =(-3)^e F(X_{n'}-X_{m'},Y_{n'}-Y_{m'}).
+\]
+The first case shows that the final factor is nonzero and has valuation
+zero. The original expression is therefore nonzero and has valuation
+$e$, as required.
+\end{proof}
+
+\begin{proposition}\label{prop:no-four}
+No four distinct vertices in the set
+\[
+  \{P_n:n\in\N,\ t_n=0\}
+\]
+are collinear.
+\end{proposition}
+
+\begin{proof}
+Suppose that $P_{n_0},P_{n_1},P_{n_2},P_{n_3}$ are collinear, where
+$n_0<n_1<n_2<n_3$ and $t_{n_i}=0$ for each $i$. Their third
+coordinates are distinct, so the line has well-defined rational slopes
+\[
+  \alpha=\frac{X_{n_1}-X_{n_0}}{n_1-n_0},\qquad
+  \beta=\frac{Y_{n_1}-Y_{n_0}}{n_1-n_0}.
+\]
+For every $0\leq i<j\leq3$, collinearity gives
+\[
+ X_{n_j}-X_{n_i}=\alpha(n_j-n_i),\qquad
+ Y_{n_j}-Y_{n_i}=\beta(n_j-n_i).
+\]
+Put $c=\alpha^2-3\beta^2$. Applying
+Lemma~\ref{lem:valuation} to the pair $(n_0,n_1)$ shows that $c\ne0$.
+For every pair $(i,j)$, the same lemma now gives
+\begin{align*}
+ \nu_3(n_j-n_i)
+ &=\nu_3\bigl(c(n_j-n_i)^2\bigr)\\
+ &=\nu_3(c)+2\nu_3(n_j-n_i).
+\end{align*}
+Hence all six positive differences $n_j-n_i$ have the same valuation
+\[
+  e=-\nu_3(c)\in\Z_{\geq0}.
+\]
+The four numbers
+\[
+  q_i=\frac{n_i-n_0}{3^e}\qquad(0\leq i\leq3)
+\]
+are integers. For $i<j$, the difference
+$q_j-q_i=(n_j-n_i)/3^e$ is not divisible by $3$. Thus the four $q_i$
+would be pairwise distinct modulo $3$. There are only three residue
+classes modulo $3$, a contradiction.
+\end{proof}
+
+We can now relate the geometry to the normalized Parikh vectors of
+$\ww$. For a finite word $v$ over $\Sigma$, define its displacement by
+\[
+  \Delta(v)=\bigl(|v|_0+|v|_1-|v|_2-|v|_3,\,
+  |v|_0-|v|_1+|v|_2-|v|_3,\,|v|\bigr)^{\mathsf T}.
+\]
+By~\eqref{eq:states} and~\eqref{eq:vertices}, if $v$ is the factor
+$t_m t_{m+1}\cdots t_{n-1}$, then $\Delta(v)=P_n-P_m$.
+The return blocks have the following Parikh vectors and displacements:
+\[
+\begin{array}{cclc}
+\toprule
+a & h(a) & \Par(R(a))^{\mathsf T} & \Delta(R(a))^{\mathsf T}\\
+\midrule
+A&0&(1,1,0,0)&(2,0,2)\\
+B&1&(1,0,2,1)&(-2,2,4)\\
+C&2&(1,2,1,2)&(0,-2,6)\\
+D&3&(1,1,3,3)&(-4,0,8)\\
+E&3&(1,1,3,3)&(-4,0,8)\\
+\bottomrule
+\end{array}
+\]
+In particular, the displacement depends only on $h(a)$, including for
+the two auxiliary letters $D,E$ that share the output letter $3$.
+Define the linear map $L:\Q^4\to\Q^3$ by the matrix
+\begin{equation}\label{eq:L}
+  L=
+  \begin{pmatrix}
+     2&-2& 0&-4\\
+     0& 2&-2& 0\\
+     2& 4& 6& 8
+  \end{pmatrix}.
+\end{equation}
+Its columns, in output-letter order $0,1,2,3$, are the four return
+displacements above.
+
+\begin{proof}[Proof of Theorem~\ref{thm:main}]
+For $\ws=s_0s_1s_2\cdots$, let
+\[
+  N_0=0,\qquad N_k=\sum_{j=0}^{k-1}|R(s_j)|\quad(k\geq1).
+\]
+By Lemma~\ref{lem:returns}, these are precisely the zero positions of
+$\wt$, in increasing order. The strict increase follows also from the
+fact that every return block has positive length.
+
+Write $\ww=w_0w_1w_2\cdots$, where $w_j=h(s_j)$. Additivity of
+displacements and the return-block table show that, for all $0\leq p<q$,
+\begin{equation}\label{eq:factor-displacement}
+  P_{N_q}-P_{N_p}
+  =\sum_{j=p}^{q-1}\Delta(R(s_j))
+  =L\Par(w_p w_{p+1}\cdots w_{q-1}).
+\end{equation}
+This holds even though $h$ is not one-to-one, because $R(D)$ and $R(E)$
+have equal displacements.
+
+Suppose for a contradiction that a factor of $\ww$ is a weak abelian
+cube $xyz$. Let $k_0$ be the position at which it starts and put
+\[
+  k_1=k_0+|x|,\qquad
+  k_2=k_1+|y|,\qquad
+  k_3=k_2+|z|.
+\]
+All three blocks are nonempty, so $k_0<k_1<k_2<k_3$.
+There is a vector $f\in\Q_{\geq0}^4$ such that
+\[
+  \Par(x)=|x|f,\qquad
+  \Par(y)=|y|f,\qquad
+  \Par(z)=|z|f.
+\]
+Its coordinates sum to $1$, since $f=\Par(x)/|x|$. If $v=Lf$, then
+the third coordinate of $v$ is
+\[
+  2f_0+4f_1+6f_2+8f_3\geq2>0.
+\]
+In particular, $v\ne0$. Applying~\eqref{eq:factor-displacement} to
+the three blocks gives
+\begin{align*}
+  P_{N_{k_1}}-P_{N_{k_0}}&=|x|v,\\
+  P_{N_{k_2}}-P_{N_{k_1}}&=|y|v,\\
+  P_{N_{k_3}}-P_{N_{k_2}}&=|z|v.
+\end{align*}
+Thus the four distinct vertices $P_{N_{k_0}},P_{N_{k_1}},P_{N_{k_2}},
+P_{N_{k_3}}$ lie on the line $P_{N_{k_0}}+\mathbb R v$.
+Each associated index is a zero position of $\wt$, contradicting
+Proposition~\ref{prop:no-four}. This excludes every weak abelian cube,
+regardless of its position or its three block lengths.
+\end{proof}
+
+\begin{remark}
+There is also a description using only the zero positions of the
+four-letter fixed point $\wt$. The return lengths associated with
+output letters $0,1,2,3$ are $2,4,6,8$, respectively. Hence, with
+$N_0<N_1<\cdots$ enumerating the zero positions of $\wt$,
+\[
+  w_k=\frac{N_{k+1}-N_k}{2}-1\qquad(k\in\N).
+\]
+Lemma~\ref{lem:returns} proves that these gaps are always in
+$\{2,4,6,8\}$, so this formula is equivalent to the explicit
+substitution-and-coding construction in Theorem~\ref{thm:main}.
+\end{remark}
+
+
+\section{Dimension 3}
+
+ Write $e_0=(1,0,0)$, $e_1=(0,1,0)$, and $e_2=(0,0,1)$.
+For a word $u=u_0u_1\cdots$ over $\{0,1,2\}$, its walk is
+\[
+ P_0=0,\qquad P_n=\sum_{j=0}^{n-1}e_{u_j}\quad(n\geq1).
+\]
+Thus $P_n$ is the Parikh vector of the length-$n$ prefix. Since the sum
+of its coordinates is $n$, all walk vertices are distinct.
+
+\subsection{The construction and its precise bound}
+
+Let $\mathcal A=\{A,B,C,D,E\}$. Define the substitution $\tau$ as in Section~\ref{dim4} and
+the non-erasing word morphism $g$ by
+\[
+\begin{array}{c|ccccc}
+ a&A&B&C&D&E\\\hline
+ \tau(a)&AB&AACA&ADE&AACCE&ADCCA\\
+ g(a)&0&1&20&21&21
+\end{array}
+\]
+Both maps extend to finite and infinite words by concatenation. Because
+$\tau(A)$ starts with $A$ and every image has length at least two, the
+finite words $\tau^k(A)$ are nested prefixes of unbounded length.
+They define an infinite fixed point $v=\tau^\infty(A)$.
+
+\begin{theorem}\label{thm:main2}
+The infinite ternary word
+\[
+ u=g\bigl(\tau^\infty(A)\bigr)
+\]
+defines a walk using only $e_0,e_1,e_2$ with no seven collinear points.
+\end{theorem}
+
+The start of the word is
+\[
+ u=\word{010020001010212101010020001002000100202021021202}\cdots.
+\]
+ In other words, Theorem
+\ref{thm:main2} gives a word with no weak abelian sixth power.
+
+\subsection{A valuation identity for a four-state walk}
+
+Define a three-uniform substitution $\sigma$ on $\{0,1,2,3\}$ by
+\[
+ \sigma(0)=010,\quad \sigma(1)=232,\quad
+ \sigma(2)=101,\quad \sigma(3)=323,
+\]
+and let $t=\sigma^\infty(0)$. Associate two signs with each state:
+\[
+\begin{array}{c|rrrr}
+ s&0&1&2&3\\\hline
+ a(s)&1&1&-1&-1\\
+ b(s)&1&-1&1&-1
+\end{array}
+\]
+Write $a_n=a(t_n)$ and $b_n=b(t_n)$. Define
+\[
+ X_n=\sum_{j<n}a_j,\quad Y_n=\sum_{j<n}b_j,\quad
+ R_n=(X_n,Y_n,n).
+\]
+The substitution gives, for $r\in\{0,1,2\}$,
+\begin{equation}\label{eq:sign}
+ a_{3n+r}=b_n,\qquad b_{3n+r}=(-1)^r a_n.
+\end{equation}
+Summing complete three-letter blocks and then a prefix of the next
+block gives
+\begin{equation}\label{eq:prefix}
+ X_{3n+r}=3Y_n+r b_n,\qquad
+ Y_{3n+r}=X_n+\epsilon_r a_n,
+ \qquad(\epsilon_0,\epsilon_1,\epsilon_2)=(0,1,0).
+\end{equation}
+
+For a nonzero integer $z$, let $\vp(z)$ be the largest integer $j\geq0$
+such that $3^j$ divides $z$. The sign of $z$ is irrelevant to this
+definition. Set $Q(X,Y)=X^2-3Y^2$.
+
+\begin{lemma}\label{lem:valuation2}
+If $0\leq m<n$ and $t_m=t_n$, then $Q(X_n-X_m,Y_n-Y_m)$ is nonzero,
+and
+\[
+ \vp\bigl(Q(X_n-X_m,Y_n-Y_m)\bigr)=\vp(n-m).
+\]
+\end{lemma}
+\begin{proof}
+Write $m=3p+r$ and $n=3q+s$, where $r,s\in\{0,1,2\}$.
+If $r\ne s$, equality of the endpoint states implies equality of their
+first signs. Equation~\eqref{eq:sign} therefore gives $b_p=b_q$.
+By~\eqref{eq:prefix},
+\[
+ X_n-X_m\equiv (s-r)b_p\not\equiv0\pmod3.
+\]
+Consequently $Q(X_n-X_m,Y_n-Y_m)\not\equiv0\pmod3$, and both
+valuations in the claimed identity are zero.
+
+If $r=s$, the two signs in~\eqref{eq:sign} show that $a_p=a_q$ and
+$b_p=b_q$, hence $t_p=t_q$. The offsets in~\eqref{eq:prefix} cancel,
+so
+\[
+ X_n-X_m=3(Y_q-Y_p),\qquad Y_n-Y_m=X_q-X_p.
+\]
+It follows that
+\[
+ Q(X_n-X_m,Y_n-Y_m)
+ =-3Q(X_q-X_p,Y_q-Y_p),\qquad n-m=3(q-p).
+\]
+Thus the desired identity descends to the equal-state pair $(p,q)$,
+adding one to each valuation. After exactly $\vp(n-m)$ descents, the
+two indices have different residues modulo three, so the preceding
+base case applies. The same argument proves that the quadratic-form
+value is nonzero throughout.
+\end{proof}
+
+\begin{lemma}\label{lem:four}
+For each fixed state $s\in\{0,1,2,3\}$, the set
+$\{R_n:t_n=s\}$ contains no four collinear vertices.
+\end{lemma}
+\begin{proof}
+Suppose four such vertices are collinear. As they are distinct integer
+points, there are a primitive integer direction
+$D=(D_X,D_Y,D_H)$ with $D_H>0$, an integer point $R$, and distinct
+integers $q_0,q_1,q_2,q_3$ such that the four vertices are $R+q_iD$.
+To justify the integrality of the parameters, choose $D$ by dividing
+one nonzero displacement by the gcd of its three coordinates. Because
+the coordinates of $D$ have gcd one, an integer linear combination
+of them is one; applying that combination to any other integer
+displacement parallel to $D$ gives its integer parameter.
+
+Lemma~\ref{lem:valuation2} implies $Q(D_X,D_Y)\ne0$. Applying that
+lemma to any pair of these four vertices and using homogeneity gives
+\[
+ 2\vp(q_j-q_i)+\vp\bigl(Q(D_X,D_Y)\bigr)
+ =\vp(q_j-q_i)+\vp(D_H).
+\]
+Therefore all six pairwise differences $q_j-q_i$ have the same
+valuation, say $h$. Every $q_i-q_0$ is divisible by $3^h$, and the
+four integers $(q_i-q_0)/3^h$ must be pairwise distinct modulo three.
+There are only three residue classes, a contradiction.
+\end{proof}
+
+\subsection{Return words and a walk with diagonal steps}
+
+Consider the five finite words
+\[
+\begin{array}{c|ccccc}
+ a&A&B&C&D&E\\\hline
+ r(a)&01&0232&013231&02323231&01323232
+\end{array}
+\]
+Each starts with a single zero and contains no further zero. Direct
+concatenation verifies the five exact identities
+\begin{align*}
+ \sigma(r(A))&=r(A)r(B),\\
+ \sigma(r(B))&=r(A)r(A)r(C)r(A),\\
+ \sigma(r(C))&=r(A)r(D)r(E),\\
+ \sigma(r(D))&=r(A)r(A)r(C)r(C)r(E),\\
+ \sigma(r(E))&=r(A)r(D)r(C)r(C)r(A).
+\end{align*}
+Equivalently, $\sigma\circ r=r\circ\tau$. Hence $r(v)$ is a fixed
+point of $\sigma$ starting with zero, and it must equal $t$: any such
+fixed point has prefix $\sigma^k(0)$ for every $k$, and these prefixes
+have lengths tending to infinity. Thus the boundaries of the return
+words $r(v_0),r(v_1),\ldots$ are exactly the positions at which the
+state of $t$ is zero.
+
+Let
+\[
+ \ell_0=0,\qquad \ell_n=\sum_{j<n}|r(v_j)|.
+\]
+Then $t_{\ell_n}=0$. The displacements of $R$ across the five return
+words, divided by two, are
+\[
+\begin{array}{c|ccccc}
+ a&A&B&C&D&E\\\hline
+ \tfrac12\Delta R(r(a))
+ &(1,0,1)&(-1,1,2)&(0,-1,3)&(-2,0,4)&(-2,0,4).
+\end{array}
+\]
+These entries follow by adding the sign pairs of the displayed words
+and taking half their lengths for the third coordinate.
+
+Now define a walk $S_0,S_1,\ldots$ with $S_0=0$ and increments
+\[
+ d(A)=e_0,\quad d(B)=e_1,\quad
+ d(C)=e_0+e_2,\quad d(D)=d(E)=e_1+e_2,
+ \qquad S_{n+1}=S_n+d(v_n).
+\]
+The integer matrix
+\[
+ M=\begin{pmatrix}1&-1&-1\\0&1&-1\\1&2&2\end{pmatrix},
+ \qquad \det M=6,
+\]
+maps each of these four increment types to its entry in the return
+displacement table. It follows by summing increments that
+\[
+ MS_n=\tfrac12 R_{\ell_n}\quad\hbox{for every }n\geq0.
+\]
+Since $M$ is invertible, collinearity of $S$ vertices is equivalent to
+collinearity of the corresponding return vertices. Lemma~\ref{lem:four}
+therefore proves that every affine line contains at most three points
+of the vertex set
+\[
+ \mathcal S=\{S_n:n\geq0\}.
+\]
+
+\subsection{Subdivision gives the seven-point bound}
+
+The coding $g$ subdivides every diagonal increment of $S$ into its two
+positive coordinate steps, taking the $e_2$ step first. In detail,
+$C$ contributes $e_2,e_0$, while $D$ and $E$ contribute $e_2,e_1$.
+An $A$ or $B$ increment is left as a single unit step.
+
+Consequently every vertex of the unit-step walk $P$ is either an
+original vertex $S_n$ or an inserted vertex $S_n+e_2$. In particular,
+\[
+ \{P_k:k\geq0\}\subseteq \mathcal S\cup(\mathcal S+e_2).
+\]
+Translation preserves collinearity, so every line contains at most
+three vertices of $\mathcal S+e_2$, as well as at most three vertices
+of $\mathcal S$. Thus it contains at most six vertices of $P$.
+This proves the avoidance assertion in Theorem~\ref{thm:main2}.
+
+\section{Declaration of AI usage}
+
+\begin{thebibliography}{99}
+
+\bibitem{AP16}
+Sergey Avgustinovich and Svetlana Puzynina.
+\newblock Weak abelian periodicity of infinite words.
+\newblock {\it Theory of Computing Systems} \textbf{59} (2016), 161--179.
+
+\bibitem{Bro71a}
+T. C. Brown.
+\newblock Is there a sequence on four symbols in which no two adjacent
+segments are permutations of one another?
+\newblock {\it Amer. Math. Monthly} {\bf 78} (1971), 886--888.
+
+\bibitem{Bro71b}
+T. C. Brown.
+\newblock Advanced problem 5811.
+\newblock {\it Amer. Math. Monthly} {\bf 78} (1971), 798.
+
+\bibitem{CK}
+Stijn Cambie and Erik Kalviainen.
+\newblock An infinite small-step $\Z^3$-walk with no collinear triple.
+\newblock Arxiv preprint arXiv:2609.01766 [math.CO],
+September 1 2026.  Available at
+\url{https://arxiv.org/abs/2609.01766v1}.
+
+\bibitem{FP23}
+Gabriele Fici and Svetlana Puzynina.
+\newblock Abelian combinatorics on words: a survey.
+\newblock {\it Computer Science Review} \textbf{47} (2023), article~100532.
+
+\bibitem{GR79}
+Joseph L.~Gerver and L.~Thomas Ramsey.
+\newblock On certain sequences of lattice points.
+\newblock {\it Pacific Journal of Mathematics} \textbf{83} (1979), 357--363.
+
+\bibitem{Ko26a}
+Samuel Korsky.
+\newblock North-east lattice paths with few collinear vertices.
+\newblock Arxiv preprint arXiv:2607.02832 [math.CO], July 2 2026.
+\newblock Available at \url{https://arxiv.org/abs/2607.02832}.
+
+\bibitem{Ko26b}
+Samuel Korsky.
+\newblock Long lattice paths with no three collinear vertices.
+\newblock Arxiv preprint arXiv:2608.07906 [math.CO], August 8 2026.
+\newblock Available at \url{https://arxiv.org/abs/2608.07906}.
+
+\bibitem{Lid24}
+Thomas F.~Lidbetter.
+\newblock Improved bound for the Gerver--Ramsey collinearity problem.
+\newblock {\it Discrete Mathematics} \textbf{347} (2024), article~113718.
+
+\bibitem{Mo72}
+P. L. Montgomery. 
+\newblock Solution to Advanced Problem 5811: 
+collinear points on a monotonic polygon.
+\newblock {\it American Mathematical Monthly} \textbf{79} (1972), 1143--1144.
+
+\bibitem{OEIS}
+N. J. A. Sloane et al.
+\newblock The On-Line Encyclopedia of Integer Sequences.
+\newblock Electronic resource, 2026.  Available at
+\url{https://oeis.org}.
+
+
+
+
+
+\end{thebibliography}
+
+\end{document}
