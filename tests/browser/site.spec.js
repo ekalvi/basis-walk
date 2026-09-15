@@ -34,33 +34,17 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect(page.locator('.hero-copy > .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
   await expect(page.locator('.hero .lede')).toContainText('three, four and six dimensions');
   await expect(page.locator('.hero').getByRole('link',{name:'arXiv · coming soon',exact:true})).toHaveAttribute('href','#sources');
-  await expect(page.locator('.hero .llm-credit')).toContainText('GPT-6 Astra');
-  await expect(page.locator('.hero .llm-credit svg[aria-hidden="true"]')).toHaveCount(1);
   const credit=page.locator('.hero .credit');
   await expect(credit.getByRole('link',{name:'Stijn Cambie',exact:true})).toHaveAttribute('href','https://arxiv.org/search/?query=Stijn+Cambie&searchtype=author');
   await expect(credit.getByRole('link',{name:'Erik Kalviainen',exact:true})).toHaveAttribute('href','https://github.com/ekalvi');
   await expect(credit.getByRole('link',{name:'Jeffrey Shallit',exact:true})).toHaveAttribute('href','https://cs.uwaterloo.ca/~shallit/');
-  const authors=await credit.boundingBox(),llm=await page.locator('.llm-credit').boundingBox();
-  expect(llm.y).toBeGreaterThanOrEqual(authors.y+authors.height);
-  const institutions=page.locator('.hero-institutions');
-  await expect(institutions.getByRole('link',{name:/KU Leuven/})).toHaveAttribute('href','https://wms.cs.kuleuven.be/cs/english');
-  await expect(institutions.getByRole('link',{name:/University of Waterloo/})).toHaveAttribute('href','https://cs.uwaterloo.ca/');
-  await expect.poll(()=>institutions.locator('img').evaluateAll(images=>images.length===2&&images.every(img=>img.complete&&img.naturalWidth>0))).toBe(true);
-  const logos=await institutions.boundingBox();
-  expect(logos.y).toBeGreaterThanOrEqual(authors.y+authors.height+20);
-  expect(llm.y).toBeGreaterThanOrEqual(logos.y+logos.height+20);
-  await expect(page.locator('.llm-credit .eyebrow')).toHaveCount(0);
+  const affiliations=page.locator('.hero-affiliations');
+  await expect(affiliations).toContainText('LLM assistance: GPT-6 Astra');
+  await expect(affiliations.getByRole('link',{name:'KU Leuven Campus Kulak-Kortrijk',exact:true})).toHaveAttribute('href','https://wms.cs.kuleuven.be/cs/english');
+  await expect(affiliations.getByRole('link',{name:'University of Waterloo',exact:true})).toHaveAttribute('href','https://cs.uwaterloo.ca/');
+  await expect(page.locator('.hero img, .hero svg')).toHaveCount(0);
   const copy=await page.locator('.hero-copy').boundingBox(),explorer=await page.locator('.explorer').boundingBox();
   expect(Math.abs(copy.width-explorer.width)).toBeLessThan(1);
-  const captions=await institutions.locator('a > span').all();
-  const captionBoxes=await Promise.all(captions.map(caption=>caption.boundingBox()));
-  expect(Math.abs(captionBoxes[0].y-captionBoxes[1].y)).toBeLessThan(1);
-  for(const selector of ['.hero-institutions a','.llm-model']){
-    for(const item of await page.locator(selector).all()){
-      const icon=await item.locator('img,svg').boundingBox(),text=await item.locator('span,strong').boundingBox();
-      expect(text.y).toBeGreaterThanOrEqual(icon.y+icon.height+9);
-    }
-  }
   await page.locator('.hero-credits').screenshot({path:'.local/hero-credits-desktop.png'});
   expect(await page.evaluate(()=>document.querySelector('#walk').getBoundingClientRect().bottom<innerHeight)).toBe(true);
   await page.screenshot({path:'.local/above-fold.png'});
@@ -198,7 +182,6 @@ test('footer uses aligned local brand icons and wraps without overflow',async({p
   await expect(footer.getByRole('link',{name:/University of Waterloo/})).toHaveAttribute('href','https://cs.uwaterloo.ca/');
   await expect(footer.locator('.institution-logo')).toHaveCount(2);
   for(const logo of await footer.locator('.institution-logo').all())await expect(logo).toHaveCSS('filter','none');
-  for(const logo of await page.locator('.hero-institutions .institution-logo').all())await expect(logo).toHaveCSS('filter','none');
   await expect.poll(()=>footer.locator('.institution-logo').evaluateAll(images=>images.every(img=>img.complete&&img.naturalWidth>0))).toBe(true);
   await expect(footer).not.toContainText('Mathematics');
   await expect(footer).not.toContainText('Software');
