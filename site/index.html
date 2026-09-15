@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Explore positive unit-step lattice walks in small dimensions. Interactive geometry, the proof idea, and exact reproducible finite checks.">
+<title>Basis Walks · Small dimensions, few collinear points</title>
+<link rel="icon" href="icon.svg" type="image/svg+xml"><link rel="stylesheet" href="style.css">
+<script type="module" src="app.js"></script>
+</head>
+<body>
+<header><a class="brand" href="#">↗ Basis Walks</a><nav aria-label="Main"><a href="#explore">Explore</a><a href="#proof">The idea</a><a href="#code">Python</a><a href="#sources">Sources</a></nav></header>
+<main>
+<section class="hero">
+<p class="eyebrow">Discrete geometry / combinatorics on words</p>
+<h1>One step at a time.<br><span>Remarkably few points in line.</span></h1>
+<p class="lede">An infinite lattice walk. Only positive coordinate steps. How few vertices can every straight line contain?</p>
+<p class="credit">A companion to <cite>Brown-Gerver-Ramsey Theorems in Small Dimensions</cite><br>by <strong>Stijn Cambie, Erik Kalviainen, and Jeffrey Shallit</strong>.</p>
+<div class="cards" aria-label="Manuscript results">
+<a href="#explore" data-d="3"><span>3 dimensions · 3 directions</span><b>No 7 collinear</b><small>At most 6 vertices on any line</small></a>
+<a href="#explore" data-d="4"><span>4 dimensions · 4 directions</span><b>No 4 collinear</b><small>At most 3 vertices on any line</small></a>
+<a href="#explore" data-d="6"><span>6 dimensions · 6 directions</span><b>No 3 collinear</b><small>At most 2 vertices on any line</small></a>
+</div>
+<p class="note">Infinite theorems in the supplied manuscript, not formal verification or claims of optimality. This companion is a work in progress. Finite computations below are supporting evidence, not infinite proofs.</p>
+</section>
+<section id="explore">
+<div class="section-head"><div><p class="eyebrow">01 / Explore</p><h2>Follow the walk.</h2></div><span class="pill">Exact coordinates. Illustrative views.</span></div>
+<div class="controls"><label>Dimension <select id="dimension"><option value="3">3D · no 7 collinear</option><option value="4">4D · no 4 collinear</option><option value="5">5D · embedded 4D walk</option><option value="6" selected>6D · no 3 collinear</option></select></label><label class="slider">Steps <input id="steps" type="range" min="16" max="512" step="16" value="128"><output id="step-count">128</output></label><button id="play">Play</button><button id="reset">Reset view</button></div>
+<div class="viewport"><canvas id="walk" tabindex="0" role="img" aria-label="Walk visualization. Drag or use arrow keys to rotate the 3D view. Exact coordinates appear below."></canvas><span class="canvas-label" id="view-label"></span><span class="canvas-hint">Drag / arrow keys to rotate</span></div>
+<div class="controls compact"><label>Reveal vertex <input id="reveal" type="range" min="0" max="128" value="128"><output id="vertex-number">128</output></label><span id="coordinates" class="mono"></span></div>
+<div id="legend" class="legend"></div>
+<p id="projection" class="note"></p>
+<details><summary>What exactly am I looking at?</summary><p>Each colored segment is one step +e<sub>j</sub> in the original lattice. The coordinates count how many times each direction has occurred, so their sum equals the vertex index. The display maps those coordinates to three spatial coordinates, then rotates the result onto your screen. It never checks collinearity using screen pixels.</p><p>The 5D option simply appends a zero to the 4D walk. It uses four directions, not five. In 6D, projection can introduce accidental overlaps or collinearity; the display is not a new 3D avoidance theorem.</p></details>
+<div class="check-panel"><div><strong>Check this finite prefix</strong><p>Exact integer directions, all vertex pairs, including unequal spacings.</p></div><button id="check">Run exact check</button><output id="check-output" aria-live="polite">Not checked yet.</output></div>
+</section>
+<section id="proof">
+<p class="eyebrow">02 / The idea</p><h2>Arithmetic makes alignment impossible.</h2>
+<div class="proof-grid"><article><span class="number">1</span><h3>Words become walks</h3><p>Read a letter j, take a step e<sub>j</sub>. Each vertex is a prefix’s letter-count vector. Consecutive blocks with identical letter proportions make collinear boundary vertices, even when their lengths differ.</p></article><article><span class="number">2</span><h3>Descend through digits</h3><p>The constructions repeat at base-2 or base-3 scales. Equal-state chords obey an exact valuation identity: the power of 2 or 3 dividing a quadratic expression matches the power dividing the index difference.</p></article><article><span class="number">3</span><h3>Too few residues</h3><p>Collinearity would force pairwise gaps to have the same valuation. Three indices cannot do this in base 2, nor four in base 3. The auxiliary geometry turns that contradiction into the lattice bounds.</p></article></div>
+<details><summary>How the three results fit together</summary><div class="details-body"><p><strong>6D:</strong> square-corner state tags force any hypothetical collinear triple into one state. The Gaussian norm and 2-adic identity rule it out. Six auxiliary step types become six standard basis directions.</p><p><strong>4D:</strong> take returns to one state in the ternary construction. Their four displacement types give a four-letter walk. The quadratic form X² − 3Y² and a modulo-3 contradiction exclude four collinear vertices.</p><p><strong>3D:</strong> transform those four return steps into two coordinate steps and two diagonal steps. Subdivide the diagonals. The vertices lie in a set S and its translate S + e₂, each meeting any line at most three times. Together, at most six.</p></div></details>
+<p class="note">Still open in this snapshot: no-three-collinear positive-basis walks in 4D or 5D, and no-four-collinear in 3D. The related original Erdős 193 theorem allows a different, arbitrary finite step set.</p>
+</section>
+<section id="code"><p class="eyebrow">03 / Reproduce</p><h2>Small code. Exact answers.</h2><p>Change the dimension or prefix length and run Python locally in your browser. No account or backend. The first run downloads a pinned Pyodide runtime from jsDelivr; nothing loads until you click.</p>
+<label for="python-code" class="sr-only">Editable Python example</label><textarea id="python-code" spellcheck="false">from walks import vertices, check
+
+# Dimensions: 3, 4, 5 (embedding), 6.
+# Up to 512 steps in this interactive checker.
+print(vertices(6, 8))
+print(check(dimension=6, steps=128))</textarea>
+<div class="controls"><button id="run-python">Load Python & run</button><button id="stop-python" disabled>Stop</button><a href="walks.py" download>Download walks.py ↓</a></div><pre id="python-output" aria-live="polite">Python has not been loaded.</pre><p class="note">Runs in a terminable worker, with a 120-second time limit. Only run code you trust; this is not a security sandbox. For larger scans, use the repository’s single-core, checkpointed CLI. Browser runs are deliberately small and restartable.</p>
+</section>
+<section id="sources"><p class="eyebrow">04 / Sources & credit</p><h2>The mathematics, and the work behind it.</h2>
+<p><strong>Stijn Cambie · Erik Kalviainen · Jeffrey Shallit</strong><br><cite>Brown-Gerver-Ramsey Theorems in Small Dimensions.</cite> Supplied Overleaf snapshot, September 2026. This site follows its 3D, 4D, and 6D results. A public link to this joint paper will be added when available and approved.</p>
+<div class="links"><a href="https://github.com/ekalvi/basis-walks">Companion GitHub ↗</a><a href="https://arxiv.org/abs/2609.01766">Original Cambie–Kalviainen paper ↗</a><a href="https://github.com/ekalvi/erdos-193">Erdős 193 repository ↗</a></div>
+<p>The original finite-step result is by <strong>Stijn Cambie and Erik Kalviainen</strong>. Background and earlier bounds include work by Brown, Montgomery, Gerver, Ramsey, and Lidbetter. This site is an explanatory and computational companion, not a replacement for their papers.</p>
+<p class="note">Site and validation code maintained by Erik Kalviainen with AI coding assistance. Paper authorship does not imply collaborator review of this software. The manuscript has its own AI-use declaration. Author review, public-paper linking, and publication remain separate steps.</p>
+</section>
+</main><footer><span>↗ Basis Walks</span><span>Positive steps. Precise claims.</span></footer>
+</body></html>

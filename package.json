@@ -1,0 +1,16 @@
+{
+  "name": "basis-walks",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Positive-basis lattice walks: visual explanation and exact finite checks",
+  "scripts": {
+    "test": "node --test tests/walks.test.js && python3 -m unittest discover -s tests -v"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.58.2"
+  }
+}
