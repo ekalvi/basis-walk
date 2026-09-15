@@ -83,9 +83,10 @@ canvas.onpointerup=canvas.onpointercancel=()=>{drag=null;};
 canvas.onkeydown=e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();yaw+=e.key==='ArrowLeft'?-.1:e.key==='ArrowRight'?.1:0;pitch+=e.key==='ArrowUp'?.1:e.key==='ArrowDown'?-.1:0;draw();};
 new ResizeObserver(draw).observe(canvas);
 const editor=$('python-code'), highlight=$('code-highlight'), originalCode=editor.value;
-const examples={six:originalCode,return:$('return-example').content.textContent.trim(),
-  check:originalCode.slice(0,originalCode.indexOf('\nfor point'))+'\n\n'+$('check-example').content.textContent.trim()};
-const drafts={...examples};let currentExample='six';
+const sixCode=$('six-example').content.textContent.trim();
+const examples={six:sixCode,return:originalCode,
+  check:sixCode.slice(0,sixCode.indexOf('\nfor point'))+'\n\n'+$('check-example').content.textContent.trim()};
+const drafts={...examples};let currentExample='return';
 editor.wrap='off';
 function highlightCode(){
   const code=highlight.querySelector('code');
@@ -130,7 +131,7 @@ $('stop-python').onclick=()=>{$('python-output').textContent+='\nStopped. Rerun 
 function showExample(){
   editor.value=drafts[currentExample];editor.scrollTop=editor.scrollLeft=0;highlightCode();
   $('python-output').textContent=currentExample==='check'?'Run the 128-step exact check.':'Run to see the first 13 vertices.';
-  $('source-name').textContent=currentExample==='check'?'check_walk.py':'basis_walk.py';$('run-status').textContent='Ready';
+  $('run-status').textContent='Ready';
 }
 $('example').onchange=()=>{drafts[currentExample]=editor.value;currentExample=$('example').value;showExample();};
 $('reset-code').onclick=()=>{drafts[currentExample]=examples[currentExample];showExample();};

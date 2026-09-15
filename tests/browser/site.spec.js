@@ -31,7 +31,7 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect(page.locator('.results-table tbody td')).toHaveText(['<7','<4','<4','<3']);
   await expect(page.locator('.hero-copy > .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
   await expect(page.locator('.hero .lede')).toContainText('three, four and six dimensions');
-  await expect(page.getByRole('link',{name:'arXiv · coming soon',exact:true})).toHaveAttribute('href','#sources');
+  await expect(page.locator('.hero').getByRole('link',{name:'arXiv · coming soon',exact:true})).toHaveAttribute('href','#sources');
   await expect(page.locator('.hero .llm-credit')).toContainText('GPT-6 Astra');
   await expect(page.locator('.hero .llm-credit svg[aria-hidden="true"]')).toHaveCount(1);
   const authors=await page.locator('.hero .credit').boundingBox(),llm=await page.locator('.llm-credit').boundingBox();
@@ -132,6 +132,11 @@ test('formula summary and 3D basis diagram are labeled and fit a small screen',a
 test('styled workbench connects edited code to output on desktop and mobile',async({page})=>{
   await page.goto(base);
   await expect(page.locator('.tok-keyword').first()).toHaveText('def');
+  await expect(page.locator('.source-panel .panel-head #example')).toHaveValue('return');
+  await expect(page.locator('#code')).not.toContainText('All checkers');
+  await expect(page.locator('#code')).not.toContainText('No imports');
+  await expect(page.locator('#code')).not.toContainText('Ctrl/⌘');
+  await expect(page.locator('#sources').getByRole('link',{name:'arXiv · coming soon',exact:true})).toHaveAttribute('href','#sources');
   const source=await page.locator('.source-panel').boundingBox();
   const output=await page.locator('.output-panel').boundingBox();
   expect(output.x).toBeGreaterThan(source.x);
@@ -144,8 +149,10 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   await page.keyboard.press('Escape');
   await expect(page.locator('#fullscreen-code')).toHaveAttribute('aria-pressed','false');
   await page.locator('#reset-code').click();
-  await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n\):/);
+  await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n, d=4\):/);
   expect((await page.locator('#python-code').inputValue()).split('\n').length).toBeLessThanOrEqual(16);
+  await page.selectOption('#example','six');
+  await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n\):/);
   await page.selectOption('#example','return');
   await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n, d=4\):/);
   await page.locator('#python-code').fill('print("saved draft")');
@@ -203,7 +210,7 @@ test('live pinned Pyodide executes exact checker',async({page})=>{
   page.on('request',request=>{if(new URL(request.url()).pathname.endsWith('/walks.py'))pythonDownloads.push(request.url());});
   await page.route('**/walks.py',route=>route.abort());
   await page.goto(base);await page.click('#run-python');
-  await expect(page.locator('#python-output')).toContainText('[0, 0, 0, 0, 0, 0]',{timeout:120000});
+  await expect(page.locator('#python-output')).toContainText('[0, 0, 0, 0]',{timeout:120000});
   await expect(page.locator('#run-status')).toHaveText('Finished');
   await expect(page.locator('#python-output')).not.toContainText('finite-prefix-pass');
   await page.selectOption('#example','check');

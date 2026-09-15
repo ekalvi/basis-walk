@@ -17,14 +17,15 @@ class InlineExampleTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         page = (ROOT / "site/index.html").read_text()
-        six = html.unescape(re.search(
+        default = html.unescape(re.search(
             r'<textarea id="python-code"[^>]*>(.*?)</textarea>', page, re.S
         ).group(1))
         def template(name):
             return html.unescape(re.search(
                 rf'<template id="{name}">(.*?)</template>', page, re.S
             ).group(1)).strip()
-        cls.sources = {"six": six, "return": template("return-example"),
+        six = template("six-example")
+        cls.sources = {"six": six, "return": default,
                        "check": six.split("\nfor point")[0] + "\n\n" + template("check-example")}
         cls.namespaces, cls.outputs = {}, {}
         for name, source in cls.sources.items():
