@@ -55,6 +55,21 @@ test('automatic camera frames a planar cloud face-on and stays finite',()=>{
     assert.ok(Number.isFinite(view.yaw)&&Number.isFinite(view.pitch));
   }
 });
+test('displayed block-proportion criterion matches exact collinearity',()=>{
+  const cases=[vertices(3,12),vertices(4,12),vertices(6,12),
+    [[0,0,0],[1,0,0],[1,1,0],[2,1,0],[2,2,0],[3,2,0],[3,3,0]]];
+  let unequalSpacingWitness=false;
+  for(const points of cases)for(let a=0;a<points.length;a++)for(let b=a+1;b<points.length;b++)for(let c=b+1;c<points.length;c++){
+    const first=points[b].map((x,j)=>x-points[a][j]);
+    const second=points[c].map((x,j)=>x-points[b][j]);
+    const proportionEqual=first.every((x,j)=>x*(c-b)===second[j]*(b-a));
+    const axis=first.findIndex(x=>x!==0);
+    const collinear=first.every((x,j)=>x*second[axis]===second[j]*first[axis]);
+    assert.equal(proportionEqual,collinear);
+    if(proportionEqual&&b-a!==c-b)unequalSpacingWitness=true;
+  }
+  assert.equal(unequalSpacingWitness,true);
+});
 test('return displacement columns and input bounds',()=>{
   assert.deepEqual(shadow([1,0,0,0]),[1,0,1]);
   assert.deepEqual(shadow([0,0,0,1]),[-2,0,4]);

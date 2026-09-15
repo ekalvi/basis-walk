@@ -55,6 +55,20 @@ test('compact results, compressed views and projection explanation stay local',a
   await page.screenshot({path:'.local/mobile.png',fullPage:true});
   expect(errors).toEqual([]);expect(external).toEqual([]);
 });
+test('formula summary and 3D basis diagram are labeled and fit a small screen',async({page})=>{
+  await page.goto(base);
+  await page.locator('.hero a[href="#basis-rule"]').click();
+  await expect(page.locator('#basis-rule math')).toHaveCount(2);
+  await expect(page.locator('#basis-rule math').first()).toBeVisible();
+  await expect(page.getByRole('img',{name:'The three positive standard basis vectors in 3D'})).toBeVisible();
+  await expect(page.locator('.basis-diagram svg')).toContainText('(1, 0, 0)');
+  await expect(page.locator('.basis-diagram svg')).toContainText('(0, 1, 0)');
+  await expect(page.locator('.basis-diagram svg')).toContainText('(0, 0, 1)');
+  await expect(page.locator('.basis-diagram figcaption')).toContainText('Illustrative 2D');
+  await page.setViewportSize({width:320,height:740});
+  await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
+  await page.locator('#basis-rule').screenshot({path:'.local/basis-rule-mobile.png'});
+});
 test('styled workbench connects edited code to output on desktop and mobile',async({page})=>{
   await page.goto(base);
   await expect(page.locator('.tok-keyword').first()).toHaveText('from');

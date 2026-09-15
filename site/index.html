@@ -14,7 +14,7 @@
 <p class="eyebrow">Beyond Erdős Problem 193</p>
 <h1>Only basis steps.<br>How few points on a line?</h1>
 <p class="lede">Take an infinite walk on the integer lattice, moving one unit forward along one coordinate axis at each step. What is the smallest possible bound on the number of vertices lying on any straight line?</p>
-<p class="hero-context"><a href="https://erdos-193.q5m.ai/">Erdős Problem 193 ↗</a> asks for a 3D lattice walk with a finite set of allowed steps and no three collinear vertices. Here the step rule is stricter: only the positive standard basis vectors +e<sub>0</sub>, …, +e<sub>d−1</sub> are allowed. Allowing more dimensions leads to stronger known avoidance bounds under this restriction.</p>
+<p class="hero-context"><a href="https://erdos-193.q5m.ai/">Erdős Problem 193 ↗</a> asks for a 3D lattice walk with a finite set of allowed steps and no three collinear vertices. Here the step rule is stricter: only the <a href="#basis-rule">positive standard basis vectors</a> +e<sub>0</sub>, …, +e<sub>d−1</sub> are allowed. Allowing more dimensions leads to stronger known avoidance bounds under this restriction.</p>
 <p class="credit">A companion to <cite>Brown-Gerver-Ramsey Theorems in Small Dimensions</cite><br>by <strong>Stijn Cambie, Erik Kalviainen, and Jeffrey Shallit</strong>.</p>
 <div class="table-wrap"><table class="results-table">
 <caption>Infinite constructions in the manuscript · upper bounds on collinearity</caption>
@@ -44,6 +44,28 @@
 </section>
 <section id="proof">
 <p class="eyebrow">02 / The idea</p><h2>From letter counts to collinearity.</h2>
+<div class="basis-rule" id="basis-rule">
+<div class="formula-summary">
+<h3>The construction in two formulas</h3>
+<p>Choose a word w with letters 0, …, d − 1. Each letter selects one positive unit step:</p>
+<math display="block" aria-label="P zero equals zero. P n equals the sum of basis vectors e sub w i, for i from zero to n minus one."><mrow><msub><mi>P</mi><mn>0</mn></msub><mo>=</mo><mn>0</mn><mo>,</mo><mspace width="1em"/><msub><mi>P</mi><mi>n</mi></msub><mo>=</mo><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>0</mn></mrow><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></munderover><msub><mi>e</mi><msub><mi>w</mi><mi>i</mi></msub></msub></mrow></math>
+<p>For a &lt; b &lt; c, the three vertices lie on one line exactly when the two intervening blocks have equal step proportions:</p>
+<math display="block" aria-label="P b minus P a, divided by b minus a, equals P c minus P b, divided by c minus b."><mrow><mfrac><mrow><msub><mi>P</mi><mi>b</mi></msub><mo>−</mo><msub><mi>P</mi><mi>a</mi></msub></mrow><mrow><mi>b</mi><mo>−</mo><mi>a</mi></mrow></mfrac><mo>=</mo><mfrac><mrow><msub><mi>P</mi><mi>c</mi></msub><mo>−</mo><msub><mi>P</mi><mi>b</mi></msub></mrow><mrow><mi>c</mi><mo>−</mo><mi>b</mi></mrow></mfrac></mrow></math>
+<p class="formula-takeaway"><strong>The strategy:</strong> construct the word so equal proportions cannot persist across too many consecutive blocks. For k collinear vertices, all k − 1 block ratios must agree—even if the blocks have different lengths.</p>
+</div>
+<figure class="basis-diagram">
+<svg viewBox="0 0 300 250" role="img" aria-labelledby="basis-diagram-title basis-diagram-desc">
+<title id="basis-diagram-title">The three positive standard basis vectors in 3D</title>
+<desc id="basis-diagram-desc">Three arrows leave the origin: e zero equals (1, 0, 0), e one equals (0, 1, 0), and e two equals (0, 0, 1). Each moves one unit along just one coordinate axis. This is an illustrative flat drawing of three perpendicular spatial directions.</desc>
+<defs><marker id="basis-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="context-stroke"/></marker></defs>
+<g fill="none" stroke-width="2.5" marker-end="url(#basis-arrow)"><path d="M150 150 L246 193" stroke="#3183df"/><path d="M150 150 L54 193" stroke="#d58727"/><path d="M150 150 L150 39" stroke="#179b80"/></g>
+<circle cx="150" cy="150" r="4" fill="#192332"/>
+<g class="axis-label"><text x="254" y="185" fill="#2672c9">e₀</text><text x="35" y="185" fill="#9b5a10">e₁</text><text x="166" y="44" fill="#127b65">e₂</text></g>
+<g class="axis-coordinate"><text x="226" y="217" text-anchor="middle">(1, 0, 0)</text><text x="73" y="217" text-anchor="middle">(0, 1, 0)</text><text x="150" y="21" text-anchor="middle">(0, 0, 1)</text><text x="150" y="173" text-anchor="middle">origin</text></g>
+</svg>
+<figcaption>Three allowed steps in 3D.<br>One coordinate increases by 1; the others stay fixed. <span>Illustrative 2D view of perpendicular 3D axes.</span></figcaption>
+</figure>
+</div>
 <div class="proof-grid"><article><span class="number">1</span><h3>Words become walks</h3><p>Read a letter j, take a step e<sub>j</sub>. Each vertex is a prefix’s letter-count vector. Consecutive blocks with identical letter proportions make collinear boundary vertices, even when their lengths differ.</p></article><article><span class="number">2</span><h3>Descend through digits</h3><p>The constructions repeat at base-2 or base-3 scales. Equal-state chords obey an exact valuation identity: the power of 2 or 3 dividing a quadratic expression matches the power dividing the index difference.</p></article><article><span class="number">3</span><h3>Too few residues</h3><p>Collinearity would force pairwise gaps to have the same valuation. Three indices cannot do this in base 2, nor four in base 3. The auxiliary geometry turns that contradiction into the lattice bounds.</p></article></div>
 <details><summary>How the three results fit together</summary><div class="details-body"><p><strong>6D:</strong> square-corner state tags force any hypothetical collinear triple into one state. The Gaussian norm and 2-adic identity rule it out. Six auxiliary step types become six standard basis directions.</p><p><strong>4D:</strong> take returns to one state in the ternary construction. Their four displacement types give a four-letter walk. The quadratic form X² − 3Y² and a modulo-3 contradiction exclude four collinear vertices.</p><p><strong>3D:</strong> transform those four return steps into two coordinate steps and two diagonal steps. Subdivide the diagonals. The vertices lie in a set S and its translate S + e₂, each meeting any line at most three times. Together, at most six.</p></div></details>
 <p class="note">Still open in this snapshot: no-three-collinear positive-basis walks in 4D or 5D, and no-four-collinear in 3D. The related original Erdős 193 theorem allows a different, arbitrary finite step set.</p>
