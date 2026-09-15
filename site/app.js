@@ -1,7 +1,8 @@
-import {letters,vertices,shadow,colors,projectionColumns,compressForward,viewAngles} from './walks.js';
+import {letters,vertices,shadow,colors,projectionColumns,compressForward,viewAngles,viewFrame,rotatePoint} from './walks.js';
 const $ = id => document.getElementById(id);
 const canvas = $('walk'), ctx = canvas.getContext('2d');
 let d=6,n=4096,points=[],projected=[],word=[],yaw=-.55,pitch=.6,zoom=1,playing=false,frame=0,drag=null;
+let framing={center:[0,0,0],radius:1};
 const defaultCompression=()=>Math.min(512,Math.round(Math.sqrt(n)*(d===4||d===5?2:1)));
 function refresh() {
   stop(); d=Number($('dimension').value); n=Number($('steps').value);
@@ -30,6 +31,7 @@ function updateLegend(){
 function updateProjection(reframe=false){
   const factor=Number($('compression').value);
   projected=compressForward(points.map(shadow),factor);
+  framing=viewFrame(projected);
   if(reframe)({yaw,pitch}=viewAngles(projected));
   $('compression-value').value=factor===1?'Off':`1/${factor}`;
   $('view-label').textContent=`${d===3?'3D':`${d}D → 3D`} · illustrative · ${n.toLocaleString()} steps · ${factor===1?'uncompressed':`forward scale 1/${factor}`}`;
@@ -41,14 +43,11 @@ function draw() {
     canvas.width=Math.round(width*ratio);canvas.height=Math.round(height*ratio);
   }
   ctx.setTransform(ratio,0,0,ratio,0,0);ctx.clearRect(0,0,width,height);
-  const rotated=projected.map(([x,y,z])=>{
-    const a=x*Math.cos(yaw)-y*Math.sin(yaw),b=x*Math.sin(yaw)+y*Math.cos(yaw);
-    return [a,b*Math.sin(pitch)-z*Math.cos(pitch),b*Math.cos(pitch)+z*Math.sin(pitch)];
-  });
-  const xs=rotated.map(p=>p[0]),ys=rotated.map(p=>p[1]);
-  const xmin=Math.min(...xs),xmax=Math.max(...xs),ymin=Math.min(...ys),ymax=Math.max(...ys);
-  const scale=zoom*Math.min((width-64)/Math.max(1,xmax-xmin),(height-76)/Math.max(1,ymax-ymin));
-  const mapped=rotated.map(([x,y])=>[width/2+(x-(xmin+xmax)/2)*scale,height/2+(y-(ymin+ymax)/2)*scale]);
+  const rotated=projected.map(p=>rotatePoint(p.map((x,k)=>x-framing.center[k]),yaw,pitch));
+  const scale=zoom*Math.max(1,Math.min(width-64,height-76))/(2*framing.radius);
+  const mapped=rotated.map(([x,y])=>[width/2+x*scale,height/2+y*scale]);
+  canvas.dataset.viewScale=String(scale);
+  canvas.dataset.viewCenter=framing.center.join(',');
   const reveal=Number($('reveal').value);
   ctx.lineWidth=.65;ctx.strokeStyle='#162435';ctx.beginPath();
   mapped.forEach(([x,y],i)=>i?ctx.lineTo(x,y):ctx.moveTo(x,y));ctx.stroke();
@@ -79,7 +78,7 @@ $('dimension').onchange=refresh;$('steps').oninput=refresh;
 $('reveal').oninput=()=>{stop();draw();};
 document.querySelectorAll('[data-d]').forEach(el=>el.onclick=()=>{$('dimension').value=el.dataset.d;refresh();});
 canvas.onpointerdown=e=>{drag=[e.clientX,e.clientY];canvas.setPointerCapture(e.pointerId);};
-canvas.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.008;pitch=Math.max(-1.5,Math.min(1.5,pitch+(e.clientY-drag[1])*.008));drag=[e.clientX,e.clientY];draw();};
+canvas.onpointermove=e=>{if(!drag)return;yaw+=(e.clientX-drag[0])*.008;pitch+=(e.clientY-drag[1])*.008;drag=[e.clientX,e.clientY];draw();};
 canvas.onpointerup=canvas.onpointercancel=()=>{drag=null;};
 canvas.onkeydown=e=>{if(!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();yaw+=e.key==='ArrowLeft'?-.1:e.key==='ArrowRight'?.1:0;pitch+=e.key==='ArrowUp'?.1:e.key==='ArrowDown'?-.1:0;draw();};
 new ResizeObserver(draw).observe(canvas);

@@ -28,6 +28,9 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect(page.locator('.results-table thead th')).toHaveCount(4);
   await expect(page.locator('.results-table tbody tr')).toHaveCount(1);
   await expect(page.locator('.results-table')).not.toContainText('Directions used');
+  await expect(page.locator('.results-table tbody td')).toHaveText(['No 7','No 4','No 4','No 3']);
+  await expect(page.locator('.hero .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
+  await expect(page.locator('.hero .lede')).toContainText('three, four and six dimensions');
   expect(await page.evaluate(()=>document.querySelector('#walk').getBoundingClientRect().bottom<innerHeight)).toBe(true);
   await page.screenshot({path:'.local/above-fold.png'});
   await page.locator('#view-options summary').click();
@@ -59,6 +62,25 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
   await page.screenshot({path:'.local/mobile.png',fullPage:true});
   expect(errors).toEqual([]);expect(external).toEqual([]);
+});
+test('dragging and keyboard rotation keep the same scale and pivot',async({page})=>{
+  await page.goto(base);
+  for(const dimension of ['3','4','5','6']){
+    await page.selectOption('#dimension',dimension);
+    const canvas=page.locator('#walk');
+    const scale=await canvas.getAttribute('data-view-scale');
+    const center=await canvas.getAttribute('data-view-center');
+    const coordinates=await page.locator('#coordinates').textContent();
+    const before=await canvas.screenshot();
+    const rect=await canvas.boundingBox();
+    await page.mouse.move(rect.x+rect.width/2,rect.y+rect.height/2);
+    await page.mouse.down();await page.mouse.move(rect.x+rect.width/2+80,rect.y+rect.height/2+45,{steps:8});await page.mouse.up();
+    await canvas.focus();await page.keyboard.press('ArrowRight');await page.keyboard.press('ArrowUp');
+    await expect(canvas).toHaveAttribute('data-view-scale',scale);
+    await expect(canvas).toHaveAttribute('data-view-center',center);
+    await expect(page.locator('#coordinates')).toHaveText(coordinates);
+    expect((await canvas.screenshot()).equals(before)).toBe(false);
+  }
 });
 test('long-prefix rendering, zoom and colors leave integer coordinates unchanged',async({page})=>{
   await page.goto(base);
@@ -131,9 +153,14 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
 test('footer uses aligned local brand icons and wraps without overflow',async({page})=>{
   await page.goto(base);
   const footer=page.locator('.sitefoot');
+  await expect(footer).toContainText('Made in Canada by ekalvi and Belgium by Stijn');
+  await expect(footer.locator('.country-flag')).toHaveCount(2);
+  await expect(footer).not.toContainText('Mathematics');
+  await expect(footer).not.toContainText('Software');
+  await expect(page.locator('#sources')).toContainText('Stijn Cambie, Erik Kalviainen & Jeffrey Shallit');
   await expect(footer.getByRole('link',{name:'q5m',exact:true})).toHaveAttribute('href','https://www.q5m.ai');
   await expect(footer.getByRole('link',{name:'GitHub',exact:true})).toHaveAttribute('href','https://github.com/ekalvi/basis-walks');
-  await expect(footer.locator('svg[aria-hidden="true"]')).toHaveCount(2);
+  await expect(footer.locator('.footer-icon[aria-hidden="true"]')).toHaveCount(2);
   await expect(footer).toHaveCSS('text-transform','uppercase');
   await expect(footer).toHaveCSS('border-top-width','1px');
   await footer.screenshot({path:'.local/footer-desktop.png'});

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {letters,vertices,check,shadow,projectionColumns,compressForward,viewAngles} from '../site/walks.js';
+import {letters,vertices,check,shadow,projectionColumns,compressForward,viewAngles,viewFrame,rotatePoint} from '../site/walks.js';
 test('exact prefix scans and basis invariants',()=>{
   for(const d of [3,4,5,6]){
     assert.equal(check(d,128).status,'finite-prefix-pass');
@@ -41,6 +41,25 @@ test('forward compression is display-only, linear and reversible',()=>{
       p.forEach((x,k)=>assert.ok(Math.abs(x+15*along*u[k]-projected[i][k])<1e-9));
     });
     assert.deepEqual(original,snapshot);
+  }
+});
+test('camera rotation is rigid around a fixed bounding sphere',()=>{
+  assert.deepEqual(viewFrame([]),{center:[0,0,0],radius:1});
+  assert.deepEqual(viewFrame([[2,3,4]]),{center:[2,3,4],radius:1});
+  for(const d of [3,4,5,6]){
+    const points=compressForward(vertices(d,256).map(shadow),16);
+    const framing=viewFrame(points);
+    const centered=points.map(p=>p.map((x,k)=>x-framing.center[k]));
+    const distance=(a,b)=>Math.hypot(...a.map((x,k)=>x-b[k]));
+    for(const [yaw,pitch] of [[0,0],[.8,-.4],[2,Math.PI/2],[-2,Math.PI],[Math.PI*2,-1.7]]){
+      const rotated=centered.map(p=>rotatePoint(p,yaw,pitch));
+      rotated.forEach((p,i)=>{
+        assert.ok(Math.abs(Math.hypot(...p)-Math.hypot(...centered[i]))<1e-9);
+        assert.ok(Math.hypot(...p)<=framing.radius+1e-9);
+        if(i)assert.ok(Math.abs(distance(p,rotated[i-1])-distance(centered[i],centered[i-1]))<1e-9);
+      });
+      assert.deepEqual(rotatePoint([0,0,0],yaw,pitch).map(x=>x||0),[0,0,0]);
+    }
   }
 });
 test('automatic camera frames a planar cloud face-on and stays finite',()=>{

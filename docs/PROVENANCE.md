@@ -21,6 +21,10 @@ of this software. Do not assign the original paper's arXiv ID to this joint pape
 | 5 | 4 | No 4, by embedding the 4D theorem | Append one zero coordinate; not a separate five-direction theorem |
 | 6 | 6 | No 3 collinear vertices | Signed binary digit state; eight transitions collapse to six labels |
 
+The site uses the manuscript's “no k collinear” convention: 7, 4, 4, 3 in
+3D, 4D, embedded 5D, 6D. Equivalently, these are upper bounds of 6, 3, 3, 2
+vertices per line, not claims about the smallest attainable bounds.
+
 The Python return-word substitution is A→AB, B→AACA, C→ADE, D→AACCE,
 E→ADCCA, fixed point starting at A, as given in the manuscript.
 JavaScript independently enumerates ternary digit-parity returns and uses their
@@ -43,8 +47,11 @@ endpoint displacement; it does not subtract the walk's trend vertex by vertex.
 The factor stays positive (1–512), so this extra 3D transformation is invertible,
 but changes lengths and angles. It is fixed for the whole selected prefix,
 independent of reveal position. Original integer vertices and checking routines
-are unchanged. The subsequent rotation, screen zoom and 2D projection are
-illustrative. The default 4,096-step view colors by vertex order; an optional
+are unchanged. A fixed center and bounding sphere of that displayed 3D prefix
+set the camera pivot and scale. Rotation is rigid: it does not re-fit screen
+bounds or re-center at each angle. Resizing the viewport and explicit zoom may
+change screen scale; ordinary 2D foreshortening remains. The subsequent
+rotation, screen zoom and 2D projection are illustrative. The default 4,096-step view colors by vertex order; an optional
 palette identifies step directions. Neither color nor depth shading is a test
 of collinearity.
 

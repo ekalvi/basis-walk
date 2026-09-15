@@ -62,6 +62,20 @@ export function shadow(p) {
   const columns = projectionColumns(p.length);
   return [0,1,2].map(k => p.reduce((sum,x,j) => sum+x*columns[j][k],0));
 }
+// A fixed pivot and bounding sphere keep framing independent of camera angle.
+export function viewFrame(points) {
+  if (!points.length) return {center:[0,0,0],radius:1};
+  const center=[0,1,2].map(k=>{
+    const values=points.map(p=>p[k]);
+    return (Math.min(...values)+Math.max(...values))/2;
+  });
+  const radius=Math.max(...points.map(p=>Math.hypot(...p.map((x,k)=>x-center[k]))));
+  return {center,radius:radius||1};
+}
+export function rotatePoint(point, yaw, pitch) {
+  const [x,y,z]=point,a=x*Math.cos(yaw)-y*Math.sin(yaw),b=x*Math.sin(yaw)+y*Math.cos(yaw);
+  return [a,b*Math.sin(pitch)-z*Math.cos(pitch),b*Math.cos(pitch)+z*Math.sin(pitch)];
+}
 // Frame the broad face of the point cloud rather than starting edge-on. Choose
 // the camera with greatest 2D covariance area from a small deterministic grid.
 export function viewAngles(points) {
