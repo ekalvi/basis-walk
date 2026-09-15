@@ -153,7 +153,8 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
 test('footer uses aligned local brand icons and wraps without overflow',async({page})=>{
   await page.goto(base);
   const footer=page.locator('.sitefoot');
-  await expect(footer).toContainText('Made in Canada by ekalvi and Belgium by Stijn');
+  await expect(footer).toContainText('Made in Canada by ekalvi & Shallit and Belgium by Stijn');
+  await expect(footer.getByRole('link',{name:'Shallit',exact:true})).toHaveAttribute('href','https://cs.uwaterloo.ca/~shallit/');
   await expect(footer.locator('.country-flag')).toHaveCount(2);
   await expect(footer).not.toContainText('Mathematics');
   await expect(footer).not.toContainText('Software');
