@@ -4,8 +4,9 @@ Requested canonical URL: https://basis-walk.q5m.ai on q5m-n01, following
 Erdős 193's static-container / dedicated Cloudflare Tunnel model.
 
 `q5m.yaml` declares the intended target and local development command. The pinned
-Nginx image copies only `site/`; `.dockerignore` excludes manuscript sources,
-Git metadata, tests and private files even from the build context. `walks.py`
+Nginx image copies only an explicit browser-asset allowlist from `site/`;
+`.dockerignore` excludes manuscript sources, Python bytecode, Git metadata,
+tests and private files even from the build context. `walks.py`
 is served as plain text, not executed. The image records its exact Git revision
 at `/.q5m-release`, uses an unprivileged user and a read-only filesystem.
 
@@ -32,6 +33,11 @@ Required next steps:
    the declared node, retaining operation and rollback receipts.
 6. Check public HTTPS, exact `/.q5m-release`, static assets and `walks.py`, and
    confirm manuscript, private and Git paths return 403/404.
+
+`python3 tools/test_container.py` builds a disposable image and tests it with no
+network or published host ports. It checks the exact asset inventory and bytes,
+release marker, plain-text Python MIME type and private-path rejection, then
+removes only its own container and image tag. CI runs this alongside `npm test`.
 
 No production Actions writer is installed before onboarding. No public route,
 provider resources or existing services were modified during preparation.

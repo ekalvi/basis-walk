@@ -1,6 +1,16 @@
 **
 !site/
-!site/**
+site/**
+!site/index.html
+!site/app.js
+!site/walks.js
+!site/python-worker.js
+!site/style.css
+!site/icon.svg
+!site/logo-kulak.svg
+!site/logo-waterloo.svg
+!site/walks.py
 !q5m/
+q5m/**
 !q5m/Dockerfile
 !q5m/nginx.conf

@@ -21,14 +21,18 @@ services:
       interval: 10s
       timeout: 3s
       retries: 6
+      start_period: 5s
+    stop_grace_period: 10s
     cpus: 0.5
     mem_limit: 128m
+    mem_reservation: 16m
     pids_limit: 128
     logging:
       driver: local
       options:
         max-size: 10m
         max-file: "3"
+        compress: "true"
     labels:
       io.q5m.app: ${Q5M_APP}
       io.q5m.release: ${Q5M_RELEASE}

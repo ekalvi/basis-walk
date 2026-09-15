@@ -20,5 +20,6 @@ jobs:
           python-version: '3.12'
       - run: npm ci
       - run: npm test
+      - run: python3 tools/test_container.py
       - run: npx playwright install --with-deps chromium
       - run: npx playwright test
