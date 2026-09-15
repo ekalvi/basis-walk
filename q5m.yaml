@@ -1,0 +1,13 @@
+version: 2
+name: basis-walks
+development:
+  command: [python3, tools/serve_site.py]
+  health: /
+release:
+  adapter: compose
+  compose: q5m/compose.yaml
+  contract: q5m/app.env
+  health: /.q5m-release
+production:
+  node: q5m-n01
+  hostname: basis-walk.q5m.ai
