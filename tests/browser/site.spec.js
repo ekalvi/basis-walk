@@ -43,6 +43,18 @@ test('compact results, compressed views and projection explanation stay local',a
   const logos=await institutions.boundingBox();
   expect(logos.y).toBeGreaterThanOrEqual(authors.y+authors.height+20);
   expect(llm.y).toBeGreaterThanOrEqual(logos.y+logos.height+20);
+  await expect(page.locator('.llm-credit .eyebrow')).toHaveCount(0);
+  const copy=await page.locator('.hero-copy').boundingBox(),explorer=await page.locator('.explorer').boundingBox();
+  expect(Math.abs(copy.width-explorer.width)).toBeLessThan(1);
+  const captions=await institutions.locator('a > span').all();
+  const captionBoxes=await Promise.all(captions.map(caption=>caption.boundingBox()));
+  expect(Math.abs(captionBoxes[0].y-captionBoxes[1].y)).toBeLessThan(1);
+  for(const selector of ['.hero-institutions a','.llm-model']){
+    for(const item of await page.locator(selector).all()){
+      const icon=await item.locator('img,svg').boundingBox(),text=await item.locator('span,strong').boundingBox();
+      expect(text.y).toBeGreaterThanOrEqual(icon.y+icon.height+9);
+    }
+  }
   await page.locator('.hero-credits').screenshot({path:'.local/hero-credits-desktop.png'});
   expect(await page.evaluate(()=>document.querySelector('#walk').getBoundingClientRect().bottom<innerHeight)).toBe(true);
   await page.screenshot({path:'.local/above-fold.png'});
