@@ -31,6 +31,10 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect(page.locator('.results-table tbody tr')).toHaveCount(1);
   await expect(page.locator('.results-table')).not.toContainText('Directions used');
   await expect(page.locator('.results-table tbody td')).toHaveText(['<7','<4','<4','<3']);
+  const verification=page.locator('.verification-note');
+  await expect(verification).toContainText('Exact 100,000-step finite scans passed in every dimension');
+  await expect(verification).toContainText('100,001 vertices; finite evidence is not an infinite proof');
+  for(const d of ['3','4','5','6'])await expect(verification.getByRole('link',{name:`${d}D report ↗`,exact:true})).toHaveAttribute('href',`https://github.com/ekalvi/basis-walk/blob/main/results/${d}d-100000.json`);
   await expect(page.locator('.hero-copy > .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
   await expect(page.locator('.hero .lede')).toContainText('three, four and six dimensions');
   await expect(page.locator('.hero').getByRole('link',{name:'arXiv · coming soon',exact:true})).toHaveAttribute('href','#sources');
