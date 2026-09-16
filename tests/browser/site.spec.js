@@ -164,7 +164,10 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   await page.locator('#reset-code').click();
   await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n, d=4\):/);
   const stepWords=page.locator('.step-words');
-  await expect(stepWords).toContainText('Read the walk as a word.');
+  await expect(stepWords).toContainText('How the symbols become steps.');
+  await expect(stepWords).toContainText('Only the final digit strings are step words');
+  await expect(stepWords).toContainText('These letters organize the construction; they are not directions yet.');
+  await expect(stepWords).toContainText('There is no A–E source word. Each adjacent state pair');
   await expect(stepWords.locator('code')).toHaveCount(4);
   await expect(stepWords.locator('#step-word-6')).toHaveText('04301504342304301501251504301504');
   await page.setViewportSize({width:390,height:844});
