@@ -1,0 +1,18 @@
+{
+  "identity": {
+    "schema": 1,
+    "dimension": 3,
+    "steps": 100000,
+    "forbidden": 7,
+    "code": {
+      "site/walks.py": "6c4f9ece2762aa1b56aed59832a6e8dfcf09a5bba90e9082e28ec05edee23e49",
+      "verify.py": "f54accc6ce4220c623d25c3cf79e883b59af408bc555d9f69507ec51bcf8f0c0"
+    }
+  },
+  "next_anchor": 100001,
+  "pairs": 5000050000,
+  "witness": null,
+  "status": "finite-prefix-pass",
+  "vertices": 100001,
+  "note": "Finite evidence only, not an infinite proof"
+}
