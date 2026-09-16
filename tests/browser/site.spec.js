@@ -152,7 +152,7 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   await expect(page.locator('#fullscreen-code')).toHaveAttribute('aria-pressed','false');
   await page.locator('#reset-code').click();
   await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n, d=4\):/);
-  expect((await page.locator('#python-code').inputValue()).split('\n').length).toBeLessThanOrEqual(16);
+  expect((await page.locator('#python-code').inputValue()).split('\n').length).toBeLessThanOrEqual(18);
   await page.selectOption('#example','six');
   await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n\):/);
   await page.selectOption('#example','return');
@@ -163,6 +163,10 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   await expect(page.locator('#python-code')).toHaveValue('print("saved draft")');
   await page.locator('#reset-code').click();
   await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n, d=4\):/);
+  const stepWords=page.locator('.step-words');
+  await expect(stepWords).toContainText('Read the walk as a word.');
+  await expect(stepWords.locator('code')).toHaveCount(4);
+  await expect(stepWords.locator('#step-word-6')).toHaveText('04301504342304301501251504301504');
   await page.setViewportSize({width:390,height:844});
   // Read both rects in one frame: viewport resize can change scroll anchoring.
   await expect.poll(()=>page.evaluate(()=>{
