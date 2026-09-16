@@ -45,9 +45,12 @@
     while len(word) &lt; n:
         word = "".join(substitution[a] for a in word)
     point, points = [0] * d, [[0] * d]
-    for direction in "".join(coding[a] for a in word)[:n]:
-        point[int(direction)] += 1
-        points.append(point.copy())
+    for letter in "".join(coding[a] for a in word)[:n]:
+        j = int(letter)
+        e_j = [0] * d
+        e_j[j] = 1
+        point = [x + step for x, step in zip(point, e_j)]  # P[n+1] = P[n] + e_j
+        points.append(point)
     return points
 
 # Choose 3, 4, or 5. In 5D the last coordinate stays zero.
@@ -55,15 +58,18 @@ for point in basis_walk(12, d=4):
     print(point)</textarea></div></div><div class="output-panel"><div class="panel-head"><strong>Output</strong><span id="run-status" role="status">Ready</span></div><pre id="python-output" aria-live="polite">Run to see the first 13 vertices.</pre></div><div class="workbench-controls"><button id="run-python" class="primary">▶ Run code</button><button id="stop-python" disabled>Stop</button></div></div>
 <p class="note code-note" id="code-help">Runs locally in a disposable Python worker; first run downloads Pyodide. 120-second limit. Don’t paste secrets or untrusted code. Finite checks are not infinite proofs.</p>
 <template id="six-example">def basis_walk(n):
-    directions = {(0,1):0, (1,2):1, (2,3):2, (3,0):3,
+    step_label = {(0,1):0, (1,2):1, (2,3):2, (3,0):3,
                   (0,2):4, (1,3):4, (2,0):5, (3,1):5}
     states, point = [0] * (n + 1), [0] * 6
     for k in range(1, n + 1):
         states[k] = (k % 2 - states[k // 2]) % 4
     points = [point.copy()]
-    for a, b in zip(states, states[1:]):
-        point[directions[a, b]] += 1
-        points.append(point.copy())
+    for sigma_n, sigma_next in zip(states, states[1:]):
+        j = step_label[sigma_n, sigma_next]
+        e_j = [0] * 6
+        e_j[j] = 1
+        point = [x + step for x, step in zip(point, e_j)]  # P[n+1] = P[n] + e_j
+        points.append(point)
     return points
 
 for point in basis_walk(12):
