@@ -1,0 +1,138 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,microtype,booktabs}
+\usepackage[margin=1in]{geometry}
+
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{lemma}{Lemma}
+\newcommand{\N}{\mathbb N}
+\newcommand{\vthree}{\nu_3}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries A four-dimensional unit-step walk with no four collinear vertices}
+\end{center}
+
+\begin{theorem}
+There is an infinite walk in $\N^4$, using only the four standard basis
+vectors as steps, with no four collinear vertices. Equivalently, there is
+an infinite four-letter word with no weak abelian cube.
+\end{theorem}
+
+\begin{proof}
+Write the ternary expansion of $n$ as $n=\sum_{j\ge0}d_j3^j$, with
+$d_j\in\{0,1,2\}$, and put
+\[
+ a_n=(-1)^{d_1+d_3+d_5+\cdots},\qquad
+ b_n=(-1)^{d_0+d_2+d_4+\cdots}.
+\]
+Let
+\[
+ X_n=\sum_{j<n}a_j,\qquad Y_n=\sum_{j<n}b_j,
+ \qquad R_n=(X_n,Y_n,n)\in\mathbb Z^3.
+\]
+Appending a ternary digit gives, for $r=0,1,2$,
+\begin{equation}\label{eq:rec}
+ a_{3n+r}=b_n,\qquad b_{3n+r}=(-1)^r a_n,
+\end{equation}
+and hence
+\begin{equation}\label{eq:prefix}
+ X_{3n+r}=3Y_n+r b_n,\qquad
+ Y_{3n+r}=X_n+\varepsilon_r a_n,
+ \quad (\varepsilon_0,\varepsilon_1,\varepsilon_2)=(0,1,0).
+\end{equation}
+
+We first record the only arithmetic fact we need.
+
+\medskip
+\noindent\textbf{Lemma.}
+If $m<n$ and $(a_m,b_m)=(a_n,b_n)$, then
+\begin{equation}\label{eq:valuation}
+ \vthree\!\left((X_n-X_m)^2-3(Y_n-Y_m)^2\right)=\vthree(n-m),
+\end{equation}
+and the quadratic expression is nonzero.
+
+\smallskip
+Indeed, write $m=3u+r$ and $n=3v+s$. If $r\ne s$, equality of the
+first signs in \eqref{eq:rec} gives $b_u=b_v$, so by \eqref{eq:prefix}
+\[
+ X_n-X_m\equiv(s-r)b_u\not\equiv0\pmod3.
+\]
+Thus both sides of \eqref{eq:valuation} are $0$. If $r=s$, then
+\eqref{eq:rec} gives $(a_u,b_u)=(a_v,b_v)$, while \eqref{eq:prefix}
+gives
+\[
+ X_n-X_m=3(Y_v-Y_u),\qquad Y_n-Y_m=X_v-X_u.
+\]
+Hence the quadratic expression is multiplied by $-3$, and $n-m$ by
+$3$. Repeating proves the lemma.
+
+Let
+\[
+ E=\{n\ge0:(a_n,b_n)=(1,1)\}.
+\]
+No four points $R_n$ with $n\in E$ are collinear. Otherwise write four
+of them as $R+q_iD$ $(i=0,1,2,3)$, where the $q_i$ are distinct integers
+and $D=(A,B,H)$ is a primitive integer direction with $H>0$. (The integer
+points on a rational line form such a one-dimensional lattice.) The lemma
+applied to any pair gives
+\[
+ 2\vthree(q_j-q_i)+\vthree(A^2-3B^2)
+ =\vthree(q_j-q_i)+\vthree(H).
+\]
+Thus all six differences $q_j-q_i$ have one common $3$-adic valuation,
+say $e$. Dividing the $q_i-q_0$ by $3^e$ would make four integers pairwise
+distinct modulo $3$, which is impossible.
+
+It remains to turn these selected vertices into a four-direction unit
+walk. For $n=9q+3u+v$, with $u,v\in\{0,1,2\}$, the digit definition gives
+\begin{equation}\label{eq:9}
+ (a_n,b_n)=\bigl((-1)^u a_q,(-1)^v b_q\bigr).
+\end{equation}
+Thus the residues $r\pmod9$ for which $9q+r\in E$ are
+\[
+\begin{array}{c|c}
+(a_q,b_q)&r\\ \hline
+(1,1)&0,2,6,8\\
+(1,-1)&1,7\\
+(-1,1)&3,5\\
+(-1,-1)&4
+\end{array}
+\]
+Moreover, passing from $q$ to $q+1$ flips exactly one of the two signs:
+in base $3$, trailing $2$'s become $0$'s, while the first digit that is
+not $2$ changes parity. Hence, if
+\[
+ 0=N_0<N_1<N_2<\cdots
+\]
+are the elements of $E$, then $N_{k+1}-N_k\in\{2,4,6,8\}$. Summing
+$(a_j,b_j,1)$ between two consecutive elements of $E$ in the four
+possible cases gives
+\begin{equation}\label{eq:steps}
+\begin{array}{c|cccc}
+N_{k+1}-N_k&2&4&6&8\\ \hline
+R_{N_{k+1}}-R_{N_k}
+ &(2,0,2)&(-2,2,4)&(0,-2,6)&(-4,0,8).
+\end{array}
+\end{equation}
+
+Now define $W_0=0\in\N^4$. If $N_{k+1}-N_k=2r$, let
+\[
+ W_{k+1}=W_k+e_r\qquad (r=1,2,3,4),
+\]
+where $e_1,\ldots,e_4$ are the standard basis vectors. Let
+$T:\mathbb R^4\to\mathbb R^3$ be the linear map sending $e_r$ to the
+$r$th displacement in \eqref{eq:steps}. By telescoping,
+\[
+ T(W_k)=R_{N_k}\qquad(k\ge0).
+\]
+If four vertices $W_{k_0},W_{k_1},W_{k_2},W_{k_3}$ were collinear,
+their four images under $T$ would also be collinear. These images are
+distinct because their third coordinates are
+$N_{k_0}<N_{k_1}<N_{k_2}<N_{k_3}$. This contradicts the preceding
+paragraph. Hence the unit-step walk $(W_k)$ has no four collinear
+vertices.
+\end{proof}
+
+\end{document}

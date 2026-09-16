@@ -23,7 +23,10 @@ of this software. Do not assign the original paper's arXiv ID to this joint pape
 
 The site's table shows <7, <4, <4, <3 vertices per line in
 3D, 4D, embedded 5D, 6D, matching the manuscript's “no k collinear” convention. Equivalently, these are upper bounds of 6, 3, 3, 2
-vertices per line, not claims about the smallest attainable bounds.
+vertices per line, not claims about the smallest attainable bounds. The updated
+manuscript exhibits six collinear vertices in its particular 3D construction,
+so that construction attains its stated bound; this is not an optimality result
+across all possible walks.
 
 The Python return-word substitution is A→AB, B→AACA, C→ADE, D→AACCE,
 E→ADCCA, fixed point starting at A, as given in the manuscript.
@@ -67,7 +70,10 @@ of collinearity.
 - Passing a prefix is finite evidence only. Reports bind exact source hashes,
   parameters, checked pair counts and witness/status. Logs/checkpoints are separate.
 - Open here: no-three in 4D/5D; no-four in 3D. No optimality asserted.
-- 5D testing is an embedding sanity check, not a new result.
+- The updated manuscript records a separate five-direction 5D candidate checked
+  for 250,000 terms, but gives no infinite proof. This site does not implement or
+  claim that candidate.
+- 5D testing here is an embedding sanity check, not a new result.
 
 ## Attribution
 

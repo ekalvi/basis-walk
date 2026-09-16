@@ -124,6 +124,9 @@ test('formula summary and 3D basis diagram are labeled and fit a small screen',a
   await expect(page.locator('.basis-diagram svg')).toContainText('(0, 1, 0)');
   await expect(page.locator('.basis-diagram svg')).toContainText('(0, 0, 1)');
   await expect(page.locator('.basis-diagram figcaption')).toContainText('Illustrative 2D');
+  const bounds=page.locator('#proof details');
+  await expect(bounds).toContainText('six vertices of this construction');
+  await expect(bounds).toContainText('five-direction 5D candidate checked for 250,000 terms, but not proved');
   await page.setViewportSize({width:320,height:740});
   await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
   await page.locator('#basis-rule').screenshot({path:'.local/basis-rule-mobile.png'});
