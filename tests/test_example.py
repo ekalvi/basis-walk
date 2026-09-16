@@ -38,8 +38,8 @@ class InlineExampleTests(unittest.TestCase):
         self.assertLessEqual(len(self.sources["six"].splitlines()), 18)
         self.assertLessEqual(len(self.sources["return"].splitlines()), 18)
         for name in ("six", "return"):
-            self.assertIn("e_j =", self.sources[name])
-            self.assertIn("P[n+1] = P[n] + e_j", self.sources[name])
+            self.assertIn("eⱼ =", self.sources[name])
+            self.assertIn("Pₙ₊₁ = Pₙ + eⱼ", self.sources[name])
         for source in self.sources.values():
             tree = ast.parse(source)
             self.assertFalse(any(isinstance(node, (ast.Import, ast.ImportFrom))

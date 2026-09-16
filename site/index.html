@@ -47,9 +47,9 @@
     point, points = [0] * d, [[0] * d]
     for letter in "".join(coding[a] for a in word)[:n]:
         j = int(letter)
-        e_j = [0] * d
-        e_j[j] = 1
-        point = [x + step for x, step in zip(point, e_j)]  # P[n+1] = P[n] + e_j
+        eⱼ = [0] * d
+        eⱼ[j] = 1
+        point = [x + step for x, step in zip(point, eⱼ)]  # Pₙ₊₁ = Pₙ + eⱼ
         points.append(point)
     return points
 
@@ -64,11 +64,11 @@ for point in basis_walk(12, d=4):
     for k in range(1, n + 1):
         states[k] = (k % 2 - states[k // 2]) % 4
     points = [point.copy()]
-    for sigma_n, sigma_next in zip(states, states[1:]):
-        j = step_label[sigma_n, sigma_next]
-        e_j = [0] * 6
-        e_j[j] = 1
-        point = [x + step for x, step in zip(point, e_j)]  # P[n+1] = P[n] + e_j
+    for σ_now, σ_next in zip(states, states[1:]):
+        j = step_label[σ_now, σ_next]
+        eⱼ = [0] * 6
+        eⱼ[j] = 1
+        point = [x + step for x, step in zip(point, eⱼ)]  # Pₙ₊₁ = Pₙ + eⱼ
         points.append(point)
     return points
 
