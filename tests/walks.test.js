@@ -18,7 +18,19 @@ test('display columns are the actual linear map in each dimension',()=>{
     for(let j=0;j<d;j++)assert.deepEqual(shadow(Array.from({length:d},(_,k)=>Number(j===k))),columns[j]);
   }
   assert.deepEqual(projectionColumns(5)[4],[0,0,0]);
-  vertices(6,8192).forEach((p,j)=>assert.equal(shadow(p)[2],j));
+  const sixColumns=projectionColumns(6);
+  assert.equal(new Set(sixColumns.map(column=>column.join(','))).size,6);
+  sixColumns.forEach(([x,y,z])=>{
+    assert.ok(Math.abs(Math.hypot(x,y)-1)<1e-12);
+    assert.equal(z,1);
+  });
+  const sixPoints=vertices(6,8192);
+  sixPoints.forEach((p,j)=>assert.equal(shadow(p)[2],j));
+  const projected=compressForward(sixPoints.map(shadow),Math.round(Math.sqrt(8192)));
+  const framing=viewFrame(projected),angles=viewAngles(projected);
+  const rotated=projected.map(p=>rotatePoint(p.map((x,k)=>x-framing.center[k]),angles.yaw,angles.pitch));
+  const depth=rotated.map(p=>p[2]);
+  assert.ok(Math.max(...depth)-Math.min(...depth)>20);
 });
 test('forward compression is display-only, linear and reversible',()=>{
   const points=[[0,0,0],[2,3,4],[10,0,0]],copy=structuredClone(points);

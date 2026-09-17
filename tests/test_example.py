@@ -71,6 +71,8 @@ class InlineExampleTests(unittest.TestCase):
             for dimension in (3, 4, 5):
                 self.assertEqual(self.namespaces["return"]["basis_walk"](steps, dimension),
                                  walks.vertices(dimension, steps))
+        with self.assertRaises(ValueError):
+            self.namespaces["return"]["basis_walk"](12, 6)
 
     def test_optional_checker(self):
         namespace = self.namespaces["check"]

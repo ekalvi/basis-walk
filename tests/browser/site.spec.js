@@ -52,6 +52,7 @@ test('compact results, compressed views and projection explanation stay local',a
     await page.selectOption('#dimension',d);
     await expect(page.locator('#map-columns tr')).toHaveCount(Number(d));
     await expect(page.locator('#projection')).toContainText('2D screen');
+    if(d==='6')await expect(page.locator('#projection')).toContainText('six evenly spaced horizontal spokes');
     const coordinates=await page.locator('#coordinates').textContent();
     await page.locator('#compression').fill('24');
     await expect(page.locator('#view-label')).toContainText('1/24');

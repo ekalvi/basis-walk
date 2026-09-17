@@ -46,10 +46,12 @@ not literally R³. Our rendered 6D→3D map is only illustrative. It must not in
 the theorem for the separately constructed finite-step 3D walk.
 
 The explorer lists the exact columns used by its linear display map, sourced
-from the same JavaScript function as the renderer. In 6D the illustrative map
-is X = x₀ − x₂ + x₄ − x₅, Y = x₁ − x₃ + x₄ − x₅, Z = Σxⱼ: the last display
-coordinate is the step index, exposing progress instead of collapsing it into
-a dense planar trace. This choice is for visualization, not a new theorem.
+from the same JavaScript function as the renderer. In 6D, the six basis vectors
+map to the vertices of a regular hexagon in the display XY-plane, each with
+Z-component 1. Thus Z = Σxⱼ is the step index, while all six directions have
+distinct, evenly spaced display vectors. This balanced map replaces a thin
+contrast projection that made the rendered walk appear nearly planar. It is for
+visualization, not a new theorem.
 An optional longitudinal
 compression shortens only the component parallel to the projected prefix's
 endpoint displacement; it does not subtract the walk's trend vertex by vertex.
