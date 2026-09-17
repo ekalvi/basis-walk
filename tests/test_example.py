@@ -17,6 +17,7 @@ class InlineExampleTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         page = (ROOT / "site/index.html").read_text()
+        cls.page = page
         default = html.unescape(re.search(
             r'<textarea id="python-code"[^>]*>(.*?)</textarea>', page, re.S
         ).group(1))
@@ -35,14 +36,34 @@ class InlineExampleTests(unittest.TestCase):
             cls.namespaces[name], cls.outputs[name] = namespace, output.getvalue()
 
     def test_short_and_import_free(self):
-        self.assertLessEqual(len(self.sources["six"].splitlines()), 16)
-        self.assertLessEqual(len(self.sources["return"].splitlines()), 16)
+        self.assertLessEqual(len(self.sources["six"].splitlines()), 18)
+        self.assertLessEqual(len(self.sources["return"].splitlines()), 18)
+        for name in ("six", "return"):
+            self.assertIn("eⱼ =", self.sources[name])
+            self.assertIn("Pₙ₊₁ = Pₙ + eⱼ", self.sources[name])
         for source in self.sources.values():
             tree = ast.parse(source)
             self.assertFalse(any(isinstance(node, (ast.Import, ast.ImportFrom))
                                  for node in ast.walk(tree)))
             self.assertNotIn("__import__", source)
         self.assertIn("finite-prefix-pass", self.outputs["check"])
+
+    def test_visible_step_words_match_constructors(self):
+        def code_text(element_id):
+            return re.search(rf'<code id="{element_id}">([^<]+)</code>', self.page).group(1)
+
+        source = code_text("source-word")
+        substitution = dict(zip("ABCDE", ("AB", "AACA", "ADE", "AACCE", "ADCCA")))
+        fixed_point = "A"
+        while len(fixed_point) < len(source):
+            fixed_point = "".join(substitution[a] for a in fixed_point)
+        self.assertEqual(source, fixed_point[:len(source)])
+
+        for element_id, dimension in (("step-word-3", 3), ("step-word-4", 4),
+                                      ("step-word-6", 6)):
+            prefix = code_text(element_id)
+            self.assertEqual(prefix, "".join(map(str, walks.letters(dimension, len(prefix)))))
+        self.assertEqual(walks.letters(4, 32), walks.letters(5, 32))
 
     def test_constructors_agree_with_library(self):
         for steps in (0, 1, 16, 128, 2048):

@@ -1,0 +1,138 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath,amssymb,amsthm,booktabs,microtype}
+\usepackage[margin=1in]{geometry}
+\newtheorem*{theorem}{Theorem}
+\newtheorem*{lemma}{Lemma}
+\newcommand{\N}{\mathbb N}
+\newcommand{\Par}{\psi}
+\begin{document}
+
+\begin{center}
+{\Large\bfseries A four-letter word with no weak abelian cube}
+\end{center}
+
+For a finite word $v$, write $\Par(v)$ for its Parikh vector.  A factor
+$xyz$ is a \emph{weak abelian cube} if $x,y,z$ are nonempty and
+\[
+ \frac{\Par(x)}{|x|}=\frac{\Par(y)}{|y|}=\frac{\Par(z)}{|z|}.
+\]
+
+\begin{theorem}
+There is an infinite word on four letters with no weak abelian cube.
+Equivalently, there is an infinite unit-step walk in $\N^4$ with no four
+collinear vertices.
+\end{theorem}
+
+\begin{proof}
+Consider the fixed point $t=t_0t_1\cdots$ of
+\[
+ 0\mapsto010,\qquad1\mapsto232,\qquad
+ 2\mapsto101,\qquad3\mapsto323.
+\]
+Associate to the states $0,1,2,3$ the sign pairs
+\[
+ (1,1),\ (1,-1),\ (-1,1),\ (-1,-1),
+\]
+and let $(a_n,b_n)$ be the pair belonging to $t_n$.  Put
+\[
+ X_n=\sum_{j<n}a_j,\qquad Y_n=\sum_{j<n}b_j,
+ \qquad P_n=(X_n,Y_n,n).
+\]
+We need only the following $3$-adic fact.
+
+\medskip
+\noindent\textbf{Claim.} If $m<n$ and $t_m=t_n$, then
+\begin{equation}\label{eq:key}
+ \nu_3\bigl((X_n-X_m)^2-3(Y_n-Y_m)^2\bigr)=\nu_3(n-m),
+\end{equation}
+and the quadratic expression is nonzero.
+
+Indeed, the substitution gives, for $r=0,1,2$,
+\[
+ a_{3n+r}=b_n,\qquad b_{3n+r}=(-1)^r a_n,
+\]
+so
+\[
+ X_{3n+r}=3Y_n+r b_n,
+ \qquad
+ Y_{3n+r}=X_n+\varepsilon_r a_n,
+ \quad(\varepsilon_0,\varepsilon_1,\varepsilon_2)=(0,1,0).
+\]
+Write $m=3u+r$ and $n=3v+s$.  If $r\ne s$, equality of the endpoint
+states gives $b_u=b_v$, whence
+$X_n-X_m\equiv(s-r)b_u\not\equiv0\pmod3$; both sides of
+\eqref{eq:key} are therefore zero.  If $r=s$, equality of the endpoint
+states gives $t_u=t_v$ and
+\[
+ X_n-X_m=3(Y_v-Y_u),\qquad Y_n-Y_m=X_v-X_u.
+\]
+Thus the quadratic expression is multiplied by $-3$, while $n-m$ is
+multiplied by $3$.  Repeating proves the claim.
+
+It follows at once that, for each fixed state, the corresponding vertices
+$P_n$ contain no four collinear points.  For if four such vertices had
+indices $n_0<n_1<n_2<n_3$, collinearity would give constants
+$\alpha,\beta$ with
+\[
+ X_{n_j}-X_{n_i}=\alpha(n_j-n_i),\qquad
+ Y_{n_j}-Y_{n_i}=\beta(n_j-n_i).
+\]
+Equation \eqref{eq:key} would then force all six differences $n_j-n_i$
+to have the same $3$-adic valuation.  Dividing by the common power of $3$
+would make four integers pairwise distinct modulo $3$, impossible.
+
+Now let
+\[
+ 0=N_0<N_1<N_2<\cdots
+\]
+be the positions of the state $0$ in $t$.  Its return words are
+\[
+ 01,\quad0232,\quad013231,\quad02323231,\quad01323232.
+\]
+For completeness, this finite list is closed under substitution:
+\[
+\begin{aligned}
+ \sigma(01)&=01\mid0232,\\
+ \sigma(0232)&=01\mid01\mid013231\mid01,\\
+ \sigma(013231)&=01\mid02323231\mid01323232,\\
+ \sigma(02323231)&=01\mid01\mid013231\mid013231\mid01323232,\\
+ \sigma(01323232)&=01\mid02323231\mid013231\mid013231\mid01.
+\end{aligned}
+\]
+Starting from the return word $01$, these factorizations show inductively that
+every $\sigma^k(01)$ is cut into the five displayed return words. Since
+$\sigma^k(01)$ begins with $\sigma^k(0)$, they therefore exhaust the returns
+in the limiting fixed point $t$. Hence every gap $N_{k+1}-N_k$ is $2,4,6,$ or $8$.  Define
+\[
+ w_k=\frac{N_{k+1}-N_k}{2}\in\{1,2,3,4\}.
+\]
+Summing the sign pairs over the five displayed return words gives
+\begin{equation}\label{eq:steps}
+ \frac{P_{N_{k+1}}-P_{N_k}}2=d_{w_k},
+ \qquad
+ \begin{array}{c|rrrr}
+ r&1&2&3&4\\ \hline
+ d_r&(1,0,1)&(-1,1,2)&(0,-1,3)&(-2,0,4).
+ \end{array}
+\end{equation}
+(The two return words of length $8$ give the same vector.)
+
+Suppose that consecutive nonempty blocks $x,y,z$ of $w$ have the same
+normalized Parikh vector $f$.  If their boundary positions are
+$k_0<k_1<k_2<k_3$, then \eqref{eq:steps} gives
+\[
+ \frac{P_{N_{k_1}}-P_{N_{k_0}}}{2}=|x|Df,
+ \quad
+ \frac{P_{N_{k_2}}-P_{N_{k_1}}}{2}=|y|Df,
+ \quad
+ \frac{P_{N_{k_3}}-P_{N_{k_2}}}{2}=|z|Df,
+\]
+where $D$ has columns $d_1,d_2,d_3,d_4$.  The last coordinate of $Df$ is
+$f_1+2f_2+3f_3+4f_4>0$, so these are nonzero positive multiples of one
+vector.  Therefore
+$P_{N_{k_0}},P_{N_{k_1}},P_{N_{k_2}},P_{N_{k_3}}$ are four distinct
+collinear zero-state vertices, a contradiction.
+\end{proof}
+
+\end{document}

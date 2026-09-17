@@ -17,6 +17,18 @@ class WalkTests(unittest.TestCase):
                           (3, '010020001010212101010020001002000100202021021202')]:
             self.assertEqual(''.join(map(str, letters(d, len(prefix)))), prefix)
 
+    def test_updated_manuscript_3d_witness(self):
+        indices = [64, 70, 82, 88, 100, 106]
+        expected = [[38, 13, 13], [41, 15, 14], [47, 19, 16],
+                    [50, 21, 17], [56, 25, 19], [59, 27, 20]]
+        points = vertices(3, indices[-1])
+        self.assertEqual([points[i] for i in indices], expected)
+        origin = expected[0]
+        for index, point in zip(indices, expected):
+            scale = (index - indices[0]) // 6
+            self.assertEqual([point[j] - origin[j] for j in range(3)],
+                             [3 * scale, 2 * scale, scale])
+
     def test_basis_invariant(self):
         for d in (3, 4, 5, 6):
             points = vertices(d, 256)

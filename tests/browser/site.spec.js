@@ -31,37 +31,18 @@ test('compact results, compressed views and projection explanation stay local',a
   await expect(page.locator('.results-table tbody tr')).toHaveCount(1);
   await expect(page.locator('.results-table')).not.toContainText('Directions used');
   await expect(page.locator('.results-table tbody td')).toHaveText(['<7','<4','<4','<3']);
+  const verification=page.locator('#code + #verification');
+  await expect(verification).toContainText('100,000 steps checked in every dimension.');
+  await expect(verification).toContainText('100,001 vertices and 5,000,050,000 vertex pairs');
+  await expect(verification.locator('.verification-reports a')).toHaveCount(4);
+  for(const d of ['3','4','5','6'])await expect(verification.getByRole('link',{name:new RegExp(`^${d}D report`)})).toHaveAttribute('href',`https://github.com/ekalvi/basis-walk/blob/main/results/${d}d-100000.json`);
   await expect(page.locator('.hero-copy > .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
   await expect(page.locator('.hero .lede')).toContainText('three, four and six dimensions');
   await expect(page.locator('.hero').getByRole('link',{name:'arXiv · coming soon',exact:true})).toHaveAttribute('href','#sources');
-  await expect(page.locator('.hero .llm-credit')).toContainText('GPT-6 Astra');
-  await expect(page.locator('.hero .llm-credit svg[aria-hidden="true"]')).toHaveCount(1);
-  const credit=page.locator('.hero .credit');
-  await expect(credit.getByRole('link',{name:'Stijn Cambie',exact:true})).toHaveAttribute('href','https://arxiv.org/search/?query=Stijn+Cambie&searchtype=author');
-  await expect(credit.getByRole('link',{name:'Erik Kalviainen',exact:true})).toHaveAttribute('href','https://github.com/ekalvi');
-  await expect(credit.getByRole('link',{name:'Jeffrey Shallit',exact:true})).toHaveAttribute('href','https://cs.uwaterloo.ca/~shallit/');
-  const authors=await credit.boundingBox(),llm=await page.locator('.llm-credit').boundingBox();
-  expect(llm.y).toBeGreaterThanOrEqual(authors.y+authors.height);
-  const institutions=page.locator('.hero-institutions');
-  await expect(institutions.getByRole('link',{name:/KU Leuven/})).toHaveAttribute('href','https://wms.cs.kuleuven.be/cs/english');
-  await expect(institutions.getByRole('link',{name:/University of Waterloo/})).toHaveAttribute('href','https://cs.uwaterloo.ca/');
-  await expect.poll(()=>institutions.locator('img').evaluateAll(images=>images.length===2&&images.every(img=>img.complete&&img.naturalWidth>0))).toBe(true);
-  const logos=await institutions.boundingBox();
-  expect(logos.y).toBeGreaterThanOrEqual(authors.y+authors.height+20);
-  expect(llm.y).toBeGreaterThanOrEqual(logos.y+logos.height+20);
-  await expect(page.locator('.llm-credit .eyebrow')).toHaveCount(0);
+  await expect(page.locator('.hero-credits')).toHaveCount(0);
+  await expect(page.locator('.hero img, .hero svg')).toHaveCount(0);
   const copy=await page.locator('.hero-copy').boundingBox(),explorer=await page.locator('.explorer').boundingBox();
   expect(Math.abs(copy.width-explorer.width)).toBeLessThan(1);
-  const captions=await institutions.locator('a > span').all();
-  const captionBoxes=await Promise.all(captions.map(caption=>caption.boundingBox()));
-  expect(Math.abs(captionBoxes[0].y-captionBoxes[1].y)).toBeLessThan(1);
-  for(const selector of ['.hero-institutions a','.llm-model']){
-    for(const item of await page.locator(selector).all()){
-      const icon=await item.locator('img,svg').boundingBox(),text=await item.locator('span,strong').boundingBox();
-      expect(text.y).toBeGreaterThanOrEqual(icon.y+icon.height+9);
-    }
-  }
-  await page.locator('.hero-credits').screenshot({path:'.local/hero-credits-desktop.png'});
   expect(await page.evaluate(()=>document.querySelector('#walk').getBoundingClientRect().bottom<innerHeight)).toBe(true);
   await page.screenshot({path:'.local/above-fold.png'});
   await page.locator('#view-options summary').click();
@@ -143,6 +124,9 @@ test('formula summary and 3D basis diagram are labeled and fit a small screen',a
   await expect(page.locator('.basis-diagram svg')).toContainText('(0, 1, 0)');
   await expect(page.locator('.basis-diagram svg')).toContainText('(0, 0, 1)');
   await expect(page.locator('.basis-diagram figcaption')).toContainText('Illustrative 2D');
+  const bounds=page.locator('#proof details');
+  await expect(bounds).toContainText('six vertices of this construction');
+  await expect(bounds).toContainText('five-direction 5D candidate checked for 250,000 terms, but not proved');
   await page.setViewportSize({width:320,height:740});
   await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
   await page.locator('#basis-rule').screenshot({path:'.local/basis-rule-mobile.png'});
@@ -168,7 +152,7 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   await expect(page.locator('#fullscreen-code')).toHaveAttribute('aria-pressed','false');
   await page.locator('#reset-code').click();
   await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n, d=4\):/);
-  expect((await page.locator('#python-code').inputValue()).split('\n').length).toBeLessThanOrEqual(16);
+  expect((await page.locator('#python-code').inputValue()).split('\n').length).toBeLessThanOrEqual(18);
   await page.selectOption('#example','six');
   await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n\):/);
   await page.selectOption('#example','return');
@@ -179,6 +163,13 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   await expect(page.locator('#python-code')).toHaveValue('print("saved draft")');
   await page.locator('#reset-code').click();
   await expect(page.locator('#python-code')).toHaveValue(/def basis_walk\(n, d=4\):/);
+  const stepWords=page.locator('.step-words');
+  await expect(stepWords).toContainText('How the symbols become steps.');
+  await expect(stepWords).toContainText('Only the final digit strings are step words');
+  await expect(stepWords).toContainText('These letters organize the construction; they are not directions yet.');
+  await expect(stepWords).toContainText('There is no A–E source word. Each adjacent state pair');
+  await expect(stepWords.locator('code')).toHaveCount(4);
+  await expect(stepWords.locator('#step-word-6')).toHaveText('04301504342304301501251504301504');
   await page.setViewportSize({width:390,height:844});
   // Read both rects in one frame: viewport resize can change scroll anchoring.
   await expect.poll(()=>page.evaluate(()=>{
@@ -198,7 +189,6 @@ test('footer uses aligned local brand icons and wraps without overflow',async({p
   await expect(footer.getByRole('link',{name:/University of Waterloo/})).toHaveAttribute('href','https://cs.uwaterloo.ca/');
   await expect(footer.locator('.institution-logo')).toHaveCount(2);
   for(const logo of await footer.locator('.institution-logo').all())await expect(logo).toHaveCSS('filter','none');
-  for(const logo of await page.locator('.hero-institutions .institution-logo').all())await expect(logo).toHaveCSS('filter','none');
   await expect.poll(()=>footer.locator('.institution-logo').evaluateAll(images=>images.every(img=>img.complete&&img.naturalWidth>0))).toBe(true);
   await expect(footer).not.toContainText('Mathematics');
   await expect(footer).not.toContainText('Software');
