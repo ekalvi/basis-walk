@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Build and smoke-test the static image without publishing any host port."""
+import hashlib
 import json
 from pathlib import Path
 import subprocess
@@ -42,13 +43,21 @@ def main():
         for name in sorted(ASSETS):
             path = ROOT / 'site' / name
             assert path.is_file() and not path.is_symlink(), 'Site assets must be regular files'
-            result = fetch('/' + path.name)
-            assert result.returncode == 0 and result.stdout == path.read_text(), path.name
+            if path.suffix == '.pdf':
+                digest = run('docker', 'exec', container, 'sha256sum',
+                             '/usr/share/nginx/html/' + path.name).stdout.split()[0]
+                assert digest == hashlib.sha256(path.read_bytes()).hexdigest(), path.name
+            else:
+                result = fetch('/' + path.name)
+                assert result.returncode == 0 and result.stdout == path.read_text(), path.name
         assert fetch('/').stdout == (ROOT / 'site/index.html').read_text()
         headers = run('docker', 'exec', container, 'wget', '-S', '-O', '/dev/null',
                       'http://127.0.0.1:8080/walks.py').stderr
         assert 'Content-Type: text/plain' in headers
         assert 'X-Content-Type-Options: nosniff' in headers
+        pdf_headers = run('docker', 'exec', container, 'wget', '-S', '-O', '/dev/null',
+                          'http://127.0.0.1:8080/brown-gerver-ramsey-theorems.pdf').stderr
+        assert 'Content-Type: application/pdf' in pdf_headers
         for path in ('/.git/config', '/paper/reference/main.tex', '/README.md',
                      '/.local/', '/q5m/app.env', '/q5m.yaml', '/site/', '/unknown.py', '/__pycache__/walks.cpython-312.pyc'):
             assert fetch(path).returncode != 0, path

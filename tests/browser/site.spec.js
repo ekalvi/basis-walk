@@ -5,12 +5,12 @@ import {fileURLToPath} from 'node:url';
 import path from 'node:path';
 let server,base;
 const root=fileURLToPath(new URL('../../site/',import.meta.url));
-const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.py':'text/plain'};
+const types={'.html':'text/html','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.py':'text/plain','.pdf':'application/pdf'};
 test.beforeAll(async()=>{
   // Temporary loopback-only test fixture, not a hosting/deployment adapter.
   server=createServer(async(req,res)=>{
     const file=new URL(req.url,'http://localhost').pathname;
-    if(file!=='/' && !/^\/[a-z-]+\.(html|js|css|svg|py)$/.test(file)){res.writeHead(404).end();return;}
+    if(file!=='/' && !/^\/[a-z-]+\.(html|js|css|svg|py|pdf)$/.test(file)){res.writeHead(404).end();return;}
     try{const name=file==='/'?'index.html':file.slice(1);const data=await readFile(path.join(root,name));
       res.writeHead(200,{'Content-Type':types[path.extname(name)]});res.end(data);
     }catch{res.writeHead(404).end();}
@@ -38,7 +38,7 @@ test('compact results, compressed views and projection explanation stay local',a
   for(const d of ['3','4','5','6'])await expect(verification.getByRole('link',{name:new RegExp(`^${d}D report`)})).toHaveAttribute('href',`https://github.com/ekalvi/basis-walk/blob/main/results/${d}d-100000.json`);
   await expect(page.locator('.hero-copy > .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
   await expect(page.locator('.hero .lede')).toContainText('three, four and six dimensions');
-  await expect(page.locator('.hero').getByRole('link',{name:'arXiv · coming soon',exact:true})).toHaveAttribute('href','#sources');
+  await expect(page.locator('.hero').getByRole('link',{name:'Read the submitted paper · PDF',exact:true})).toHaveAttribute('href','brown-gerver-ramsey-theorems.pdf');
   await expect(page.locator('.hero-credits')).toHaveCount(0);
   await expect(page.locator('.hero img, .hero svg')).toHaveCount(0);
   const copy=await page.locator('.hero-copy').boundingBox(),explorer=await page.locator('.explorer').boundingBox();
@@ -126,7 +126,7 @@ test('formula summary and 3D basis diagram are labeled and fit a small screen',a
   await expect(page.locator('.basis-diagram figcaption')).toContainText('Illustrative 2D');
   const bounds=page.locator('#proof details');
   await expect(bounds).toContainText('six vertices of this construction');
-  await expect(bounds).toContainText('five-direction 5D candidate checked for 250,000 terms, but not proved');
+  await expect(bounds).toContainText('five-direction 5D candidate checked for 600,000 terms, but not proved');
   await page.setViewportSize({width:320,height:740});
   await expect.poll(()=>page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
   await page.locator('#basis-rule').screenshot({path:'.local/basis-rule-mobile.png'});
@@ -138,7 +138,8 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   await expect(page.locator('#code')).not.toContainText('All checkers');
   await expect(page.locator('#code')).not.toContainText('No imports');
   await expect(page.locator('#code')).not.toContainText('Ctrl/⌘');
-  await expect(page.locator('#sources').getByRole('link',{name:'arXiv · coming soon',exact:true})).toHaveAttribute('href','#sources');
+  await expect(page.locator('#sources')).toContainText('permanent identifier pending');
+  await expect(page.locator('#sources').getByRole('link',{name:'Submitted paper · PDF',exact:true})).toHaveAttribute('href','brown-gerver-ramsey-theorems.pdf');
   const source=await page.locator('.source-panel').boundingBox();
   const output=await page.locator('.output-panel').boundingBox();
   expect(output.x).toBeGreaterThan(source.x);

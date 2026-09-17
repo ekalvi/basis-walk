@@ -895,8 +895,12 @@ $64,70,82,88,100,106$ are
 \]
 and lie on a line of primitive direction $(3,2,1)$. Thus Theorem~\ref{thm:d3}
 cannot be strengthened to ``at most five'' by merely sharpening its last
-estimate.
+estimate.\\
+Also in Theorem~\ref{thm:d4} the ``at most three'' is sharp with the given construction, since the second, third and fourth point $P_2=(1,1,0,0),
+P_3=(2,1,0,0) \mbox { and }
+P_4=(3,1,0,0)$ are collinear.
 \end{remark}
+%{\bf e}_{4,0}+{\bf e}_{4,1}
 
 
 \section{A common morphism for Theorems~\ref{thm:d4} and \ref{thm:d3}}\label{sec5}
@@ -1007,11 +1011,16 @@ As we mentioned, we do not know if the result of Theorem~\ref{thm:main} could be
 but we have not been able to prove that it works.  Namely, consider the cyclic
 morphism $\alpha(i)$ defined by adding $i$ modulo $5$
 to every letter of $\alpha(0)=01213101314310$.  Then $\alpha^\omega (0)$ appears
-to avoid weak abelian squares, at least as far as we have been able to check (250,000 terms), and if correct, this would give a walk in $\N^5$ with no $3$ collinear points, by the translation described in Section~\ref{sec2}.
+to avoid weak abelian squares, at least as far as we have been able to check (600,000 terms), and if correct, this would give a walk in $\N^5$ with no $3$ collinear points, by the translation described in Section~\ref{sec2}.
+
+A website devoted to explaining the results of this paper is available at\\
+\centerline{\url{https://basis-walk.q5m.ai/}\, ,} and a github repository with code is\\
+\centerline{\url{https://github.com/ekalvi/basis-walk}\, .}
 
 \section*{Declaration of AI usage}
 
-Most of the results in this paper were obtained with GPT-6 Astra. Everything was checked and rewritten by the authors.   We take full responsibility for any errors.
+Initial proofs for the results in this paper were obtained with GPT-6 Astra. Everything was checked and rewritten by the authors.
+% We take full responsibility for any errors.
 
 \begin{thebibliography}{99}
 
@@ -1082,7 +1091,7 @@ collinear points on a monotonic polygon.
 \newblock {\it Amer. Math. Monthly} \textbf{79} (1972), 1143--1144.
 
 \bibitem{Sha26}
-J. Shallit, An infinite walk in \(\mathbb N^{16}\), using only unit steps, with no three collinear points.
+J. Shallit. An infinite walk in \(\mathbb N^{16}\), using only unit steps, with no three collinear points.
 \newblock ArXiv preprint arXiv:2609.05780 [math.CO] (2026).  
 \newblock Available at
 \url{https://arxiv.org/abs/2609.05780}.

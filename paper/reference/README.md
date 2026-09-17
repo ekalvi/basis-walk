@@ -1,8 +1,9 @@
 # Manuscript reference snapshot
 
 Reference sources for *Brown-Gerver-Ramsey Theorems in Small Dimensions*, by
-**Stijn Cambie, Erik Kalviainen, and Jeffrey Shallit** (updated September 2026 snapshot).
-These files are preserved unchanged from the supplied sources:
+**Stijn Cambie, Erik Kalviainen, and Jeffrey Shallit** (arXiv submission snapshot,
+September 17, 2026). These files are preserved unchanged from the supplied source
+archive:
 
 - `shortversion.tex`: current primary manuscript and implementation reference.
 - `main.tex`: older/longer exposition, including the return-word substitution.
@@ -12,16 +13,14 @@ These files are preserved unchanged from the supplied sources:
 
 `SHA256SUMS` records the exact file identities. Verify from this directory with
 `sha256sum -c SHA256SUMS`. This is a reference snapshot, not a claim that all
-files form a complete, tested LaTeX build or an approved publication version.
+files form a complete, tested LaTeX build.
 
 ## Publication boundary
 
-Tracked with repository-owner permission for reference and reproducibility in
-this private repository. This does not establish permission from all manuscript
-authors to redistribute publicly, grant a manuscript license, or imply their
-review or approval of the software.
-
-Before making the repository public, obtain the necessary authors' permission
-or remove these sources **from Git history as well as the working tree**.
-Keep this directory outside the served static site; serve only `site/`.
+The authors authorized public release of the repository, and the September 17
+arXiv submission metadata selects the
+[Creative Commons Attribution 4.0 license](https://creativecommons.org/licenses/by/4.0/)
+for the manuscript. That license does not automatically apply to this repository's
+software. Keep this source directory outside the served static site; the reviewed
+submitted PDF is the only manuscript artifact copied into `site/`.
 Software maintenance and AI coding assistance are separate from paper authorship.

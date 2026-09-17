@@ -17,7 +17,11 @@ class WalkTests(unittest.TestCase):
                           (3, '010020001010212101010020001002000100202021021202')]:
             self.assertEqual(''.join(map(str, letters(d, len(prefix)))), prefix)
 
-    def test_updated_manuscript_3d_witness(self):
+    def test_updated_manuscript_witnesses(self):
+        points_4d = vertices(4, 4)
+        self.assertEqual(points_4d[2:5], [[1, 1, 0, 0], [2, 1, 0, 0],
+                                         [3, 1, 0, 0]])
+
         indices = [64, 70, 82, 88, 100, 106]
         expected = [[38, 13, 13], [41, 15, 14], [47, 19, 16],
                     [50, 21, 17], [56, 25, 19], [59, 27, 20]]

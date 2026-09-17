@@ -17,6 +17,7 @@ ASSETS = {
     "logo-kulak.svg": "image/svg+xml",
     "logo-waterloo.svg": "image/svg+xml",
     "walks.py": "text/plain; charset=utf-8",
+    "brown-gerver-ramsey-theorems.pdf": "application/pdf",
 }
 
 

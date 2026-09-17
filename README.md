@@ -93,14 +93,15 @@ the same checkpoint/log/output paths. Complexity is O(N² d) time and O(N d)
 memory; deliberately use bounded prefixes before scaling. Completed checkpoints
 are rejected if either verifier or generator changes; use a fresh run path.
 
-## Public release
+## Paper and public release
 
-This companion is based on an unpublished manuscript. A public link to the joint
-paper is not yet available; the related Cambie–Kalviainen paper is linked
-separately in [Sources and attribution](docs/PROVENANCE.md).
+The joint manuscript was submitted to arXiv on September 17, 2026. Its permanent
+arXiv identifier is pending; the submitted PDF is available from the companion
+site. The related Cambie–Kalviainen paper is linked separately in
+[Sources and attribution](docs/PROVENANCE.md).
 
-Author review of credit and mathematical wording, licensing decisions, and a
-repository-wide privacy review remain prerequisites for public release. The
-[reference TeX sources](paper/reference/README.md) are tracked for private use;
-public release requires authors' permission or removal from Git history. No
-software or manuscript license has been selected yet.
+The authors authorized publication of this repository, and the arXiv submission
+metadata licenses the manuscript under
+[CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The reference TeX
+snapshot remains outside the served static site; only the reviewed PDF is hosted.
+No separate software license has been selected.
