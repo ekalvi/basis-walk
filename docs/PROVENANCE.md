@@ -4,13 +4,19 @@
 
 **Stijn Cambie, Erik Kalviainen, Jeffrey Shallit.**
 *Brown-Gerver-Ramsey Theorems in Small Dimensions.*
-Unpublished manuscript, September 2026. Reference TeX sources are tracked in
-[`paper/reference/`](../paper/reference/README.md) for private reproducibility,
-with file hashes and a publication-permission boundary. A public paper link will
-be added when available and approved.
+Submitted to arXiv on September 17, 2026, under the Creative Commons
+Attribution 4.0 license. A permanent public arXiv identifier has not yet been
+assigned. A PDF rendered from the submitted primary TeX source is hosted at
+[`site/brown-gerver-ramsey-theorems.pdf`](../site/brown-gerver-ramsey-theorems.pdf),
+and the supplied TeX snapshot is tracked in
+[`paper/reference/`](../paper/reference/README.md) with file hashes. The hosted
+PDF was built from `shortversion.tex` with Tectonic 0.17.0; the obsolete
+`breakurl` package was omitted for XeTeX compatibility without changing the
+manuscript text.
 
-This is a manuscript snapshot, not proof of publication or collaborator approval
-of this software. Do not assign the original paper's arXiv ID to this joint paper.
+Submission is not an announcement or proof of publication, and manuscript
+coauthorship does not imply review of this software. Do not assign the related
+paper's arXiv ID to this joint paper.
 
 ## Results used
 
@@ -24,9 +30,9 @@ of this software. Do not assign the original paper's arXiv ID to this joint pape
 The site's table shows <7, <4, <4, <3 vertices per line in
 3D, 4D, embedded 5D, 6D, matching the manuscript's “no k collinear” convention. Equivalently, these are upper bounds of 6, 3, 3, 2
 vertices per line, not claims about the smallest attainable bounds. The updated
-manuscript exhibits six collinear vertices in its particular 3D construction,
-so that construction attains its stated bound; this is not an optimality result
-across all possible walks.
+manuscript exhibits six collinear vertices in its particular 3D construction
+and three collinear vertices in its 4D construction, so both constructions attain
+their stated bounds. These are not optimality results across all possible walks.
 
 The Python return-word substitution is A→AB, B→AACA, C→ADE, D→AACCE,
 E→ADCCA, fixed point starting at A, as given in the manuscript.
@@ -71,7 +77,7 @@ of collinearity.
   parameters, checked pair counts and witness/status. Logs/checkpoints are separate.
 - Open here: no-three in 4D/5D; no-four in 3D. No optimality asserted.
 - The updated manuscript records a separate five-direction 5D candidate checked
-  for 250,000 terms, but gives no infinite proof. This site does not implement or
+  for 600,000 terms, but gives no infinite proof. This site does not implement or
   claim that candidate.
 - 5D testing here is an embedding sanity check, not a new result.
 
@@ -89,8 +95,9 @@ The manuscript's own AI declaration is separate; this repo does not audit it.
 Code consistently uses zero-based direction labels. The saved finite reports
 cover only the prefixes identified in those reports, not all manuscript examples.
 
-## Publication gates
+## Publication status
 
-Author review of wording/credit; joint-paper public link; licensing agreement;
-independent mathematical review; explicit public repo and hosting authorization.
-This repository does not grant a license to the manuscript content.
+The authors authorized making this repository public. The manuscript submission
+selects CC BY 4.0; the repository does not apply that license to the software.
+The permanent arXiv identifier remains pending, and neither independent
+mathematical review nor formal verification is claimed.

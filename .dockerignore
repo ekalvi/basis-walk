@@ -10,6 +10,7 @@ site/**
 !site/logo-kulak.svg
 !site/logo-waterloo.svg
 !site/walks.py
+!site/brown-gerver-ramsey-theorems.pdf
 !q5m/
 q5m/**
 !q5m/Dockerfile

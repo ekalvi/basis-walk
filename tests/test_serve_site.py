@@ -49,6 +49,9 @@ class DevServerTests(unittest.TestCase):
         self.assertEqual(headers["Content-Type"], "text/plain; charset=utf-8")
         self.assertEqual(body, b"")
         self.assertEqual(self.request("/walks.py?download=1")[0], 200)
+        status, headers, _ = self.request("/brown-gerver-ramsey-theorems.pdf", "HEAD")
+        self.assertEqual(status, 200)
+        self.assertEqual(headers["Content-Type"], "application/pdf")
 
     def test_unknown_and_traversal_paths(self):
         for path in ["/README.md", "/paper/reference/main.tex", "/.git/config",
