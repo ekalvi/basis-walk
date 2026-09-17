@@ -10,13 +10,13 @@ function refresh() {
   points=vertices(d,n); word=letters(d,n);
   $('step-count').value=n.toLocaleString(); $('reveal').max=n; $('reveal').value=n;
   $('projection').textContent=d===3?'3D coordinates → optional forward compression → rotation → 2D screen. The readout below the canvas is unmodified.':d===6?
-    '6D lattice → illustrative 3D map → forward compression → rotation → 2D screen. Here X = x₀ − x₂ + x₄ − x₅, Y = x₁ − x₃ + x₄ − x₅, and Z = x₀ + ⋯ + x₅ is the step index. This is not a certified 3D avoidance construction.':
+    '6D lattice → balanced illustrative 3D map → forward compression → rotation → 2D screen. The six basis directions become six evenly spaced horizontal spokes, each rising by one unit; Z = x₀ + ⋯ + x₅ is the step index. This is not a certified 3D avoidance construction.':
     `${d}D lattice → manuscript’s 3D return-displacement map → optional forward compression → rotation → 2D screen.${d===5?' The fifth coordinate is always zero; its display vector is also zero.':''}`;
   $('map-caption').textContent=d===3?'3D: identity map before compression':d===6?'6D: chosen illustrative vectors, not the manuscript’s auxiliary space':`${d}D: return-displacement vectors${d===5?' with a zero fifth column':''}`;
   $('map-columns').replaceChildren(...projectionColumns(d).map((v,j)=>{
     const row=document.createElement('tr'), label=document.createElement('th');
     label.scope='row';label.textContent=`e${'₀₁₂₃₄₅'[j]}${d===5&&j===4?' (unused)':''}`;row.append(label);
-    for(const value of v){const cell=document.createElement('td');cell.textContent=value;row.append(cell);}
+    for(const value of v){const cell=document.createElement('td');cell.textContent=Number.isInteger(value)?value:value.toFixed(3);row.append(cell);}
     return row;
   }));
   updateLegend();updateProjection(true);

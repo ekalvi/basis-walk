@@ -56,7 +56,8 @@ export function projectionColumns(d) {
   if (!(d in bounds)) throw Error('Invalid dimension');
   if (d === 3) return [[1,0,0],[0,1,0],[0,0,1]];
   if (d < 6) return [[1,0,1],[-1,1,2],[0,-1,3],[-2,0,4],[0,0,0]].slice(0,d);
-  return [[1,0,1],[0,1,1],[-1,0,1],[0,-1,1],[1,1,1],[-1,-1,1]];
+  const h = Math.sqrt(3)/2;
+  return [[1,0,1],[.5,h,1],[-.5,h,1],[-1,0,1],[-.5,-h,1],[.5,-h,1]];
 }
 export function shadow(p) {
   const columns = projectionColumns(p.length);

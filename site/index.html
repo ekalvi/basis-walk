@@ -39,6 +39,7 @@
 </section>
 <section id="code"><div class="section-head"><div><p class="eyebrow">The constructor</p><h2>A short rule. An infinite walk.</h2></div></div>
 <div class="workbench" id="workbench"><div class="source-panel"><div class="panel-head"><label class="sr-only" for="example">Example</label><select id="example"><option value="return" selected>3D–5D constructor</option><option value="six">6D constructor</option><option value="check">6D + exact check</option></select><div class="panel-actions"><button id="fullscreen-code" aria-pressed="false">Full screen</button><button id="reset-code">Reset</button></div></div><div class="editor"><pre id="code-highlight" aria-hidden="true"><code></code></pre><label for="python-code" class="sr-only">Editable Python example</label><textarea id="python-code" spellcheck="false" autocapitalize="off" autocomplete="off" aria-describedby="code-help">def basis_walk(n, d=4):
+    if d not in (3, 4, 5): raise ValueError("choose dimension 3, 4, or 5")
     substitution = dict(zip("ABCDE", ("AB", "AACA", "ADE", "AACCE", "ADCCA")))
     code = ("0", "1", "20", "21", "21") if d == 3 else ("0", "1", "2", "3", "3")
     coding, word = dict(zip("ABCDE", code)), "A"
@@ -52,7 +53,6 @@
         point = [x + step for x, step in zip(point, eⱼ)]  # Pₙ₊₁ = Pₙ + eⱼ
         points.append(point)
     return points
-
 # Choose 3, 4, or 5. In 5D the last coordinate stays zero.
 for point in basis_walk(12, d=4):
     print(point)</textarea></div></div><div class="output-panel"><div class="panel-head"><strong>Output</strong><span id="run-status" role="status">Ready</span></div><pre id="python-output" aria-live="polite">Run to see the first 13 vertices.</pre></div><div class="workbench-controls"><button id="run-python" class="primary">▶ Run code</button><button id="stop-python" disabled>Stop</button></div></div>
