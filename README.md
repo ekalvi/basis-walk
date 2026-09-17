@@ -96,12 +96,13 @@ are rejected if either verifier or generator changes; use a fresh run path.
 ## Paper and public release
 
 The joint manuscript was submitted to arXiv on September 17, 2026. Its permanent
-arXiv identifier is pending; the submitted PDF is available from the companion
-site. The related Cambie–Kalviainen paper is linked separately in
+arXiv identifier is pending; a PDF rendered from the submitted TeX snapshot is
+available from the companion site. The related Cambie–Kalviainen paper is linked separately in
 [Sources and attribution](docs/PROVENANCE.md).
 
 The authors authorized publication of this repository, and the arXiv submission
 metadata licenses the manuscript under
 [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The reference TeX
-snapshot remains outside the served static site; only the reviewed PDF is hosted.
+snapshot remains outside the served static site; only its reviewed PDF rendering
+is hosted.
 No separate software license has been selected.

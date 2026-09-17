@@ -21,6 +21,7 @@ The authors authorized public release of the repository, and the September 17
 arXiv submission metadata selects the
 [Creative Commons Attribution 4.0 license](https://creativecommons.org/licenses/by/4.0/)
 for the manuscript. That license does not automatically apply to this repository's
-software. Keep this source directory outside the served static site; the reviewed
-submitted PDF is the only manuscript artifact copied into `site/`.
+software. Keep this source directory outside the served static site; a reviewed
+PDF rendered from `shortversion.tex` is the only manuscript artifact copied into
+`site/`.
 Software maintenance and AI coding assistance are separate from paper authorship.

@@ -11,7 +11,7 @@ Compose's internal Nginx port is 8080. Only tunnel ingress is permitted.
 The pinned Nginx image copies an explicit browser-asset allowlist from `site/`.
 `.dockerignore` excludes manuscript sources, Python bytecode, Git metadata,
 tests and private files even from the build context. The allowlist includes the
-reviewed submitted-paper PDF, but not the TeX source directory. `walks.py` is
+reviewed PDF rendering of the submitted paper, but not the TeX source directory. `walks.py` is
 plain text, never executed by the server. The image records its exact Git revision at
 `/.q5m-release`, runs unprivileged with a read-only filesystem, and has bounded
 CPU, memory, PID and log resources. There is no backend or server-side editor.
@@ -59,7 +59,7 @@ Verify HTTPS `/.q5m-release` equals the intended full integration SHA, asset
 responses, PDF and Python MIME, and rejection of TeX/private/Git paths. Keep
 live success receipts distinct from unit tests or manifest validation.
 
-Public hosting serves the reviewed submitted PDF, not the manuscript source
+Public hosting serves the reviewed PDF rendering, not the manuscript source
 archive. It does not assert collaborator review of the companion software.
 Credit, submission status, licensing boundaries and mathematical qualifications
 remain as documented in README.md and PROVENANCE.md.

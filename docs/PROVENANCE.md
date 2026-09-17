@@ -6,10 +6,13 @@
 *Brown-Gerver-Ramsey Theorems in Small Dimensions.*
 Submitted to arXiv on September 17, 2026, under the Creative Commons
 Attribution 4.0 license. A permanent public arXiv identifier has not yet been
-assigned. The submitted PDF is hosted at
+assigned. A PDF rendered from the submitted primary TeX source is hosted at
 [`site/brown-gerver-ramsey-theorems.pdf`](../site/brown-gerver-ramsey-theorems.pdf),
 and the supplied TeX snapshot is tracked in
-[`paper/reference/`](../paper/reference/README.md) with file hashes.
+[`paper/reference/`](../paper/reference/README.md) with file hashes. The hosted
+PDF was built from `shortversion.tex` with Tectonic 0.17.0; the obsolete
+`breakurl` package was omitted for XeTeX compatibility without changing the
+manuscript text.
 
 Submission is not an announcement or proof of publication, and manuscript
 coauthorship does not imply review of this software. Do not assign the related
