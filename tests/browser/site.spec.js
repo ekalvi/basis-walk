@@ -38,7 +38,7 @@ test('compact results, compressed views and projection explanation stay local',a
   for(const d of ['3','4','5','6'])await expect(verification.getByRole('link',{name:new RegExp(`^${d}D report`)})).toHaveAttribute('href',`https://github.com/ekalvi/basis-walk/blob/main/results/${d}d-100000.json`);
   await expect(page.locator('.hero-copy > .eyebrow')).toHaveText('Beyond Brown–Gerver–Ramsey');
   await expect(page.locator('.hero .lede')).toContainText('three, four and six dimensions');
-  await expect(page.locator('.hero').getByRole('link',{name:'Read the submitted paper · PDF',exact:true})).toHaveAttribute('href','brown-gerver-ramsey-theorems.pdf');
+  await expect(page.locator('.hero').getByRole('link',{name:'Read the paper on arXiv ↗',exact:true})).toHaveAttribute('href','https://arxiv.org/abs/2609.20366');
   await expect(page.locator('.hero-credits')).toHaveCount(0);
   await expect(page.locator('.hero img, .hero svg')).toHaveCount(0);
   const copy=await page.locator('.hero-copy').boundingBox(),explorer=await page.locator('.explorer').boundingBox();
@@ -139,8 +139,9 @@ test('styled workbench connects edited code to output on desktop and mobile',asy
   await expect(page.locator('#code')).not.toContainText('All checkers');
   await expect(page.locator('#code')).not.toContainText('No imports');
   await expect(page.locator('#code')).not.toContainText('Ctrl/⌘');
-  await expect(page.locator('#sources')).toContainText('permanent identifier pending');
-  await expect(page.locator('#sources').getByRole('link',{name:'Submitted paper · PDF',exact:true})).toHaveAttribute('href','brown-gerver-ramsey-theorems.pdf');
+  await expect(page.locator('#sources')).toContainText('arXiv:2609.20366');
+  await expect(page.locator('#sources').getByRole('link',{name:'Paper on arXiv ↗',exact:true})).toHaveAttribute('href','https://arxiv.org/abs/2609.20366');
+  await expect(page.locator('#sources').getByRole('link',{name:'Submitted version · PDF',exact:true})).toHaveAttribute('href','brown-gerver-ramsey-theorems.pdf');
   const source=await page.locator('.source-panel').boundingBox();
   const output=await page.locator('.output-panel').boundingBox();
   expect(output.x).toBeGreaterThan(source.x);

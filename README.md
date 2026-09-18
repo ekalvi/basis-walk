@@ -95,9 +95,10 @@ are rejected if either verifier or generator changes; use a fresh run path.
 
 ## Paper and public release
 
-The joint manuscript was submitted to arXiv on September 17, 2026. Its permanent
-arXiv identifier is pending; a PDF rendered from the submitted TeX snapshot is
-available from the companion site. The related Cambie–Kalviainen paper is linked separately in
+The joint manuscript was submitted to arXiv on September 17, 2026 and is now
+available as [arXiv:2609.20366](https://arxiv.org/abs/2609.20366). A PDF rendered
+from the submitted TeX snapshot is also available from the companion site. The
+related Cambie–Kalviainen paper is linked separately in
 [Sources and attribution](docs/PROVENANCE.md).
 
 The authors authorized publication of this repository, and the arXiv submission

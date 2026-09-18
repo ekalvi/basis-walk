@@ -5,8 +5,9 @@
 **Stijn Cambie, Erik Kalviainen, Jeffrey Shallit.**
 *Brown-Gerver-Ramsey Theorems in Small Dimensions.*
 Submitted to arXiv on September 17, 2026, under the Creative Commons
-Attribution 4.0 license. A permanent public arXiv identifier has not yet been
-assigned. A PDF rendered from the submitted primary TeX source is hosted at
+Attribution 4.0 license and available as
+[arXiv:2609.20366](https://arxiv.org/abs/2609.20366). A PDF rendered from the
+submitted primary TeX source is hosted at
 [`site/brown-gerver-ramsey-theorems.pdf`](../site/brown-gerver-ramsey-theorems.pdf),
 and the supplied TeX snapshot is tracked in
 [`paper/reference/`](../paper/reference/README.md) with file hashes. The hosted
@@ -14,9 +15,9 @@ PDF was built from `shortversion.tex` with Tectonic 0.17.0; the obsolete
 `breakurl` package was omitted for XeTeX compatibility without changing the
 manuscript text.
 
-Submission is not an announcement or proof of publication, and manuscript
-coauthorship does not imply review of this software. Do not assign the related
-paper's arXiv ID to this joint paper.
+An arXiv posting is not peer review or proof of journal publication, and
+manuscript coauthorship does not imply review of this software. Do not assign
+the related paper's arXiv ID to this joint paper.
 
 ## Results used
 
@@ -101,5 +102,5 @@ cover only the prefixes identified in those reports, not all manuscript examples
 
 The authors authorized making this repository public. The manuscript submission
 selects CC BY 4.0; the repository does not apply that license to the software.
-The permanent arXiv identifier remains pending, and neither independent
+The manuscript is available as arXiv:2609.20366; neither independent
 mathematical review nor formal verification is claimed.
